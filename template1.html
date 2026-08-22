@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="nl"><head><script>window["__codeletBootstrap__"]=JSON.parse('{"A":"A","B":"20260818-05-4bbf81c","C":{"Abril Fatface":"YACgEZbkUVE,0","Alfa Slab One":"YACgEYS9sJU,0","Anton":"YACgEcYqQ-A,0","Archivo":"YAHO2-t-jNE,0","Arial":"YAGyDvJ_4Ts,0","Bebas Neue":"YACgESME5ew,0","Bricolage Grotesque":"YAFyMcdwzpc,0","Canva Sans":"YAFLd8sKbwc,2","Caveat":"YALBs2ploWQ,0","Comic Sans MS":"YAHO2VMiyZo,0","Cormorant Garamond":"YAFdJhX-538,0","Courier New":"YAGzXiGs0_8,0","DM Sans":"YAD1aU3sLnI,0","DM Serif Display":"YAD1aYG82rc,0","Forum":"YACgEcnnqB4,0","Fraunces":"YAEul-FRQw4,0","Georgia":"YAGzXkO0pEM,0","Helvetica Neue":"YAFcf6CtJfI,0","Impact":"YAFcfnjI7Vk,0","Inter":"YAFdJvSyp_k,3","Iowan Old Style":"YAGNIFa8j9o,0","Jacques Francois":"YAHO2a5g66Q,0","JetBrains Mono":"YAFdJksXcAk,0","Libre Baskerville":"YACgEUFdPdA,0","Manrope":"YAHO2b2feC4,0","Merriweather":"YACgEXvHxxs,0","Montserrat":"YADLjI9qxTA,0","Nunito":"YACgEX8C5Gg,0","Oleo Script":"YACgEQQ14jI,0","Phantom Sans":"YAHO2E8Pb88,0","Playfair Display":"YACgEYmuCJE,0","Poppins":"YAFdJjbTu24,1","Press Start 2P":"YAFyGr-8pmQ,0","Quicksand":"YADWjpfPmdk,0","Raleway":"YACgEVg3xZg,0","Segoe UI":"YAHNdRD1Klw,0","Source Sans 3":"YAG4lO1Mj10,0","Spectral":"YAHO2rVUHIM,0","Times New Roman":"YAGzXW3gftg,0","Times":"YAGzXW3gftg,0","Ubuntu":"YACgERDU--Q,0","Work Sans":"YAGXhLOKv44,0","Yellowtail":"YACgEYG4kG4,0","ui-monospace":"YADlN8CFZ8Q,0","ui-sans-serif":"YACkoN-xg4g,0"}}');</script><script src="/_sdk/7949ff62d67710d5.telemetry_sdk.js" integrity="sha512-KIvXA82Di44YY/RH9/63A9MuTuavYgDFG8PfErJn7Wli4K0LAOk+coo/aPXk3+ZNL96nHh9VYD4PE+fLes+laQ=="></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fotograaf Dashboard</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #20201e;
+      --muted: #777773;
+      --line: #e8e7e3;
+      --soft: #f6f5f2;
+      --accent: #c86745;
+      --accent-dark: #a64d31;
+      --accent-soft: #f8e7df;
+      --sage: #e7f0e8;
+      --sage-ink: #38704b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      width: 100%;
+      margin: 0;
+      font-family: "DM Sans", sans-serif;
+      color: var(--ink);
+      background: #f6f5f2;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 3px solid rgba(200, 103, 69, .32);
+      outline-offset: 2px;
+    }
+
+    .app-shell {
+      width: 100%;
+      min-height: calc(100 * min(var(--vh, 1vh), 1vh));
+      background:
+        radial-gradient(circle at 93% 0%, rgba(231, 194, 174, .32), transparent 26rem),
+        #f6f5f2;
+    }
+
+    .dashboard-card {
+      border: 1px solid var(--line);
+      box-shadow: 0 9px 24px rgba(47, 43, 38, .045);
+    }
+
+    .dashboard-card:hover {
+      box-shadow: 0 13px 30px rgba(47, 43, 38, .07);
+    }
+
+    .primary-action {
+      transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+
+    .primary-action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 16px rgba(166, 77, 49, .2);
+    }
+
+    .request-row {
+      transition: background .2s ease, opacity .2s ease;
+    }
+
+    .request-row:hover {
+      background: #fbfaf8;
+    }
+
+    .timeline-row {
+      position: relative;
+    }
+
+    .timeline-row:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: 21px;
+      top: 46px;
+      height: calc(100% - 22px);
+      width: 1px;
+      background: #e5e2de;
+    }
+
+    .task-toggle:checked + span {
+      text-decoration: line-through;
+      color: #9a9894;
+    }
+
+    .task-toggle:checked {
+      accent-color: var(--accent);
+    }
+
+    .gallery-extra {
+      display: none;
+    }
+
+    .weather-forecast > div:nth-child(n+8) {
+      display: none;
+    }
+
+    .weather-card.is-expanded .weather-forecast > div:nth-child(n+8) {
+      display: grid;
+    }
+
+    .gallery-extra.is-visible {
+      display: block;
+      animation: reveal .3s ease both;
+    }
+
+    .toast {
+      transform: translateY(16px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .toast.is-visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .modal-layer {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+    }
+
+    .modal-layer.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      transform: translateY(16px) scale(.98);
+      transition: transform .25s ease;
+    }
+
+    .modal-layer.is-open .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 767px) {
+      .header-actions {
+        width: 100%;
+      }
+      .header-search {
+        flex: 1;
+      }
+    }
+  </style>
+  <script src="/_sdk/0e8d3a91e1c6f495.data_sdk.js" type="text/javascript" integrity="sha512-c00oDoGjsMgluCLLEyVl3suwEkgjOGGplVFbsilUoBg4aMKNmsL3mwsc9r0dPn95qiSZyjBousQXgROkAW7p/w=="></script>
+  <script src="/_sdk/eba18683f23e5798.resizing_sdk.js" type="text/javascript" integrity="sha512-E0UWUllhwPXaNJtjyTKXWKrIE+FruPfFpO4mRmMDP2LI+U9bOizy5npCq6xx/JyWcvSK7D3TFf2wFR2Mha9kbA=="></script>
+ </head>
+ <body data-template-id="__page-root" style="background: rgb(246, 245, 242);">
+  <div class="app-shell">
+   <header class="w-full border-b border-[#e8e7e3] bg-white/90 backdrop-blur">
+    <div class="mx-auto flex max-w-[1540px] flex-col gap-4 px-5 py-4 md:flex-row md:items-center md:justify-between lg:px-8">
+     <div class="flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f8e7df] text-[#b65a3a]" aria-hidden="true"><i data-lucide="aperture" class="h-5 w-5"></i>
+      </div>
+      <div>
+       <p data-template-id="header-eyebrow" class="canva-text mb-0.5 text-xs font-semibold uppercase tracking-[0.16em]" style="color: rgb(138, 135, 129); font-weight: 700; font-style: normal; font-size: 11px; letter-spacing: 0.12rem;">Studio overzicht</p>
+       <h1 data-template-id="dashboard-title" class="canva-text m-0 font-bold tracking-[-0.03em]" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 30px;">Fotograaf Dashboard</h1>
+      </div>
+     </div>
+     <div class="header-actions flex items-center gap-3"><label class="header-search relative block min-w-[180px] md:w-64" for="dashboard-search"> <span class="sr-only">Zoek aanvragen</span> <i data-lucide="search" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b8984]"></i> <input id="dashboard-search" type="search" data-template-id="search-input" class="canva-input w-full rounded-xl border border-[#e2e0dc] bg-[#faf9f7] py-2.5 pl-10 pr-3 text-sm text-[#282724] placeholder:text-[#96938e]" autocomplete="off" placeholder="Zoek aanvragen..." style="color: rgb(40, 39, 36); font-weight: 400; font-style: normal; font-size: 15px;"> </label> <button id="open-booking-modal" type="button" data-template-id="new-booking-button" class="canva-button primary-action inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold" style="background: rgb(200, 103, 69); color: rgb(255, 255, 255); font-weight: 700;"> <i data-lucide="plus" class="h-4 w-4" aria-hidden="true"></i> <span></span> </button>
+     </div>
+    </div>
+   </header>
+   <main class="mx-auto w-full max-w-[1540px] px-5 py-7 lg:px-8">
+    <section aria-label="Overzicht" class="mb-7">
+     <div class="mb-4 flex items-end justify-between gap-4">
+      <div>
+       <h2 data-template-id="overview-heading" class="canva-text m-0 font-bold tracking-[-0.025em]" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 23px;">Goedemiddag, Nokah</h2>
+       <p data-template-id="overview-description" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Dit is wat er vandaag in je studio speelt.</p>
+      </div>
+      <div data-template-id="date-pill" class="canva-tag hidden rounded-full px-3 py-1.5 text-xs font-semibold sm:block" style="background: rgb(235, 233, 229); color: rgb(95, 92, 87); font-weight: 600; font-style: normal; font-size: 15px;">Dinsdag 18 augustus</div>
+     </div>
+     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <article data-template-id="kpi-revenue-card" class="canva-card dashboard-card rounded-2xl bg-white p-5" style="background: rgb(255, 255, 255);">
+       <div class="flex items-start justify-between">
+        <div>
+         <p data-template-id="kpi-revenue-label" class="canva-text mb-3" style="color: rgb(119, 119, 115); font-weight: 500; font-style: normal; font-size: 15px;">Omzet deze maand</p>
+         <p data-template-id="kpi-revenue-value" class="canva-text m-0 font-bold tracking-[-0.035em]" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 30px;">€ 8.420</p>
+        </div>
+        <div class="rounded-xl bg-[#f8e7df] p-2.5 text-[#b65a3a]" aria-hidden="true">
+         <i data-lucide="wallet-cards" class="h-5 w-5"></i>
+        </div>
+       </div>
+       <p data-template-id="kpi-revenue-trend" class="canva-text mt-4 mb-0 text-sm font-medium" style="color: rgb(56, 112, 75); font-weight: 600; font-style: normal; font-size: 15px;">↑ 18% tegenover juli</p>
+      </article>
+      <article data-template-id="kpi-inquiries-card" class="canva-card dashboard-card rounded-2xl bg-white p-5" style="background: rgb(255, 255, 255);">
+       <div class="flex items-start justify-between">
+        <div>
+         <p data-template-id="kpi-inquiries-label" class="canva-text mb-3" style="color: rgb(119, 119, 115); font-weight: 500; font-style: normal; font-size: 15px;">Nieuwe aanvragen</p>
+         <p data-template-id="kpi-inquiries-value" class="canva-text m-0 font-bold tracking-[-0.035em]" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 30px;">12</p>
+        </div>
+        <div class="rounded-xl bg-[#f1efe9] p-2.5 text-[#5c5a55]" aria-hidden="true">
+         <i data-lucide="mail-plus" class="h-5 w-5"></i>
+        </div>
+       </div>
+       <p data-template-id="kpi-inquiries-trend" class="canva-text mt-4 mb-0 text-sm font-medium" style="color: rgb(56, 112, 75); font-weight: 600; font-style: normal; font-size: 15px;">↑ 4 sinds vorige week</p>
+      </article>
+      <article data-template-id="kpi-shoots-card" class="canva-card dashboard-card rounded-2xl bg-white p-5" style="background: rgb(255, 255, 255);">
+       <div class="flex items-start justify-between">
+        <div>
+         <p data-template-id="kpi-shoots-label" class="canva-text mb-3" style="color: rgb(119, 119, 115); font-weight: 500; font-style: normal; font-size: 15px;">Bevestigde shoots</p>
+         <p data-template-id="kpi-shoots-value" class="canva-text m-0 font-bold tracking-[-0.035em]" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 30px;">9</p>
+        </div>
+        <div class="rounded-xl bg-[#e7f0e8] p-2.5 text-[#38704b]" aria-hidden="true">
+         <i data-lucide="calendar-check-2" class="h-5 w-5"></i>
+        </div>
+       </div>
+       <p data-template-id="kpi-shoots-trend" class="canva-text mt-4 mb-0 text-sm font-medium" style="color: rgb(95, 105, 139); font-weight: 600; font-style: normal; font-size: 15px;">3 gepland deze week</p>
+      </article>
+      <article data-template-id="kpi-delivered-card" class="canva-card dashboard-card rounded-2xl bg-white p-5" style="background: rgb(255, 255, 255);">
+       <div class="flex items-start justify-between">
+        <div>
+         <p data-template-id="kpi-delivered-label" class="canva-text mb-3" style="color: rgb(119, 119, 115); font-weight: 500; font-style: normal; font-size: 15px;">Foto's geleverd</p>
+         <p data-template-id="kpi-delivered-value" class="canva-text m-0 font-bold tracking-[-0.035em]" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 30px;">1.248</p>
+        </div>
+        <div class="rounded-xl bg-[#eef0f7] p-2.5 text-[#5f698b]" aria-hidden="true">
+         <i data-lucide="images" class="h-5 w-5"></i>
+        </div>
+       </div>
+       <p data-template-id="kpi-delivered-trend" class="canva-text mt-4 mb-0 text-sm font-medium" style="color: rgb(56, 112, 75); font-weight: 600; font-style: normal; font-size: 15px;">↑ 216 deze maand</p>
+      </article>
+     </div>
+    </section>
+    <div class="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_330px]">
+     <div class="min-w-0 space-y-6">
+      <section data-template-id="schedule-section" class="canva-section dashboard-card rounded-2xl bg-white p-5 sm:p-6" aria-labelledby="schedule-heading" style="background: rgb(255, 255, 255);">
+       <div class="mb-6 flex items-start justify-between gap-4">
+        <div>
+         <h2 id="schedule-heading" data-template-id="schedule-heading-text" class="canva-text m-0 font-bold tracking-[-0.025em]" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 23px;">Aankomende shoots</h2>
+         <p data-template-id="schedule-helper" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Je planning voor de komende dagen.</p>
+        </div><button id="focus-today" type="button" data-template-id="today-button" class="canva-button rounded-lg px-3 py-2 text-sm font-semibold" style="background: rgb(241, 239, 233); color: rgb(85, 82, 77); font-weight: 700; font-style: normal; font-size: 15px;">Vandaag</button>
+       </div>
+       <div id="timeline-list" class="space-y-1">
+        <div class="timeline-row flex gap-4 py-2">
+         <div class="z-10 flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl bg-[#20201e] text-white"><span data-template-id="shoot-day-1-day" class="canva-text text-[10px] font-semibold uppercase" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 15px;">Di</span> <span data-template-id="shoot-day-1-date" class="canva-text text-sm font-bold" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 15px;">18</span>
+         </div>
+         <div class="min-w-0 flex-1 border-b border-[#efeeeb] pb-5">
+          <div class="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+           <div class="flex min-w-0 items-center gap-3"><span data-template-id="shoot-1-time" class="canva-text w-11 shrink-0 text-sm font-semibold" style="color: rgb(78, 75, 70); font-weight: 700; font-style: normal; font-size: 15px;">14:00</span>
+            <div class="min-w-0">
+             <p data-template-id="shoot-1-title" class="canva-text m-0 font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">Brandingshoot · Atelier Mira</p>
+             <p data-template-id="shoot-1-detail" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Antwerpen Centrum · 2 uur</p>
+            </div>
+           </div><span data-template-id="shoot-1-status" class="canva-tag shrink-0 self-start rounded-full px-2.5 py-1 text-xs font-semibold sm:self-auto" style="background: rgb(248, 231, 223); color: rgb(166, 77, 49); font-weight: 700; font-style: normal; font-size: 15px;">Vandaag</span>
+          </div>
+         </div>
+        </div>
+        <div class="timeline-row flex gap-4 py-2">
+         <div class="z-10 flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl bg-[#f0efec] text-[#5c5a55]"><span data-template-id="shoot-day-2-day" class="canva-text text-[10px] font-semibold uppercase" style="color: rgb(92, 90, 85); font-weight: 700; font-style: normal; font-size: 15px;">Wo</span> <span data-template-id="shoot-day-2-date" class="canva-text text-sm font-bold" style="color: rgb(92, 90, 85); font-weight: 700; font-style: normal; font-size: 15px;">19</span>
+         </div>
+         <div class="min-w-0 flex-1 border-b border-[#efeeeb] pb-5">
+          <div class="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+           <div class="flex min-w-0 items-center gap-3"><span data-template-id="shoot-2-time" class="canva-text w-11 shrink-0 text-sm font-semibold" style="color: rgb(78, 75, 70); font-weight: 700; font-style: normal; font-size: 15px;">10:30</span>
+            <div class="min-w-0">
+             <p data-template-id="shoot-2-title" class="canva-text m-0 font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">Portretreeks · Jonas De Smet</p>
+             <p data-template-id="shoot-2-detail" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Studio Noord · 1,5 uur</p>
+            </div>
+           </div><span data-template-id="shoot-2-status" class="canva-tag shrink-0 self-start rounded-full px-2.5 py-1 text-xs font-semibold sm:self-auto" style="background: rgb(231, 240, 232); color: rgb(56, 112, 75); font-weight: 700; font-style: normal; font-size: 15px;">Bevestigd</span>
+          </div>
+         </div>
+        </div>
+        <div class="timeline-row flex gap-4 py-2">
+         <div class="z-10 flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl bg-[#f0efec] text-[#5c5a55]"><span data-template-id="shoot-day-3-day" class="canva-text text-[10px] font-semibold uppercase" style="color: rgb(92, 90, 85); font-weight: 700; font-style: normal; font-size: 15px;">Do</span> <span data-template-id="shoot-day-3-date" class="canva-text text-sm font-bold" style="color: rgb(92, 90, 85); font-weight: 700; font-style: normal; font-size: 15px;">20</span>
+         </div>
+         <div class="min-w-0 flex-1 border-b border-[#efeeeb] pb-5">
+          <div class="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+           <div class="flex min-w-0 items-center gap-3"><span data-template-id="shoot-3-time" class="canva-text w-11 shrink-0 text-sm font-semibold" style="color: rgb(78, 75, 70); font-weight: 700; font-style: normal; font-size: 15px;">16:00</span>
+            <div class="min-w-0">
+             <p data-template-id="shoot-3-title" class="canva-text m-0 font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">Familie Verdonck · Zomersessie</p>
+             <p data-template-id="shoot-3-detail" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Park Spoor Noord · 1 uur</p>
+            </div>
+           </div><span data-template-id="shoot-3-status" class="canva-tag shrink-0 self-start rounded-full px-2.5 py-1 text-xs font-semibold sm:self-auto" style="background: rgb(231, 240, 232); color: rgb(56, 112, 75); font-weight: 700; font-style: normal; font-size: 15px;">Bevestigd</span>
+          </div>
+         </div>
+        </div>
+        <div class="timeline-row flex gap-4 py-2">
+         <div class="z-10 flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl bg-[#f0efec] text-[#5c5a55]"><span data-template-id="shoot-day-4-day" class="canva-text text-[10px] font-semibold uppercase" style="color: rgb(92, 90, 85); font-weight: 700; font-style: normal; font-size: 15px;">Za</span> <span data-template-id="shoot-day-4-date" class="canva-text text-sm font-bold" style="color: rgb(92, 90, 85); font-weight: 700; font-style: normal; font-size: 15px;">22</span>
+         </div>
+         <div class="min-w-0 flex-1 pb-1">
+          <div class="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+           <div class="flex min-w-0 items-center gap-3"><span data-template-id="shoot-4-time" class="canva-text w-11 shrink-0 text-sm font-semibold" style="color: rgb(78, 75, 70); font-weight: 700; font-style: normal; font-size: 15px;">13:30</span>
+            <div class="min-w-0">
+             <p data-template-id="shoot-4-title" class="canva-text m-0 font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">Bruiloft Noor &amp; Thomas</p>
+             <p data-template-id="shoot-4-detail" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Kasteel van Brasschaat · 6 uur</p>
+            </div>
+           </div><span data-template-id="shoot-4-status" class="canva-tag shrink-0 self-start rounded-full px-2.5 py-1 text-xs font-semibold sm:self-auto" style="background: rgb(238, 234, 248); color: rgb(103, 90, 155); font-weight: 700; font-style: normal; font-size: 15px;">Voorbereiden</span>
+          </div>
+         </div>
+        </div>
+       </div>
+      </section>
+      <section data-template-id="requests-section" class="canva-section dashboard-card overflow-hidden rounded-2xl bg-white" aria-labelledby="requests-heading" style="background: rgb(255, 255, 255);">
+       <div class="flex flex-col gap-3 border-b border-[#eceae7] px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div>
+         <h2 id="requests-heading" data-template-id="requests-heading-text" class="canva-text m-0 font-bold tracking-[-0.025em]" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 23px;">Boekingsaanvragen</h2>
+         <p data-template-id="requests-helper" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Prioriteer je volgende opvolgmoment.</p>
+        </div><span id="request-count" class="rounded-full bg-[#f1efe9] px-2.5 py-1 text-xs font-bold text-[#5b5954]">5 open</span>
+       </div>
+       <div id="request-list" class="divide-y divide-[#efeeeb]">
+        <article class="request-row flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" data-searchable="Lisa Vermeulen Portretshoot 21 augustus Nieuw">
+         <div class="flex min-w-0 items-center gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f8e7df] text-sm font-bold text-[#ae5637]">
+           LV
+          </div>
+          <div class="min-w-0">
+           <p data-template-id="request-1-name" class="canva-text m-0 font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">Lisa Vermeulen</p>
+           <p data-template-id="request-1-info" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Portretshoot · 21 augustus</p>
+          </div>
+         </div>
+         <div class="flex items-center justify-between gap-3 sm:justify-end"><span data-template-id="request-1-status" class="canva-tag rounded-full px-2.5 py-1 text-xs font-semibold" style="background: rgb(248, 231, 223); color: rgb(166, 77, 49); font-weight: 700; font-style: normal; font-size: 15px;">Nieuw</span> <button type="button" class="request-action rounded-lg border border-[#dedbd6] px-3 py-1.5 text-sm font-semibold text-[#45433f] hover:bg-[#f5f3f0]" data-request="Lisa Vermeulen">Bekijken</button>
+         </div>
+        </article>
+        <article class="request-row flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" data-searchable="Noor &amp; Thomas Bruiloft 30 augustus In gesprek">
+         <div class="flex min-w-0 items-center gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#eeeaf8] text-sm font-bold text-[#675a9b]">
+           NT
+          </div>
+          <div class="min-w-0">
+           <p data-template-id="request-2-name" class="canva-text m-0 font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">Noor &amp; Thomas</p>
+           <p data-template-id="request-2-info" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Bruiloft · 30 augustus</p>
+          </div>
+         </div>
+         <div class="flex items-center justify-between gap-3 sm:justify-end"><span data-template-id="request-2-status" class="canva-tag rounded-full px-2.5 py-1 text-xs font-semibold" style="background: rgb(238, 234, 248); color: rgb(103, 90, 155); font-weight: 700; font-style: normal; font-size: 15px;">In gesprek</span> <button type="button" class="request-action rounded-lg border border-[#dedbd6] px-3 py-1.5 text-sm font-semibold text-[#45433f] hover:bg-[#f5f3f0]" data-request="Noor &amp; Thomas">Bekijken</button>
+         </div>
+        </article>
+        <article class="request-row flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" data-searchable="Studio Kora Branding 3 september Offerte verstuurd">
+         <div class="flex min-w-0 items-center gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#e7f0e8] text-sm font-bold text-[#3c7650]">
+           SK
+          </div>
+          <div class="min-w-0">
+           <p data-template-id="request-3-name" class="canva-text m-0 font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">Studio Kora</p>
+           <p data-template-id="request-3-info" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Brandingshoot · 3 september</p>
+          </div>
+         </div>
+         <div class="flex items-center justify-between gap-3 sm:justify-end"><span data-template-id="request-3-status" class="canva-tag rounded-full px-2.5 py-1 text-xs font-semibold" style="background: rgb(247, 239, 225); color: rgb(154, 108, 37); font-weight: 700; font-style: normal; font-size: 15px;">Offerte verstuurd</span> <button type="button" class="request-action rounded-lg border border-[#dedbd6] px-3 py-1.5 text-sm font-semibold text-[#45433f] hover:bg-[#f5f3f0]" data-request="Studio Kora">Bekijken</button>
+         </div>
+        </article>
+        <article class="request-row flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" data-searchable="Amira El Hamdi Familieshoot 7 september Nieuw">
+         <div class="flex min-w-0 items-center gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f7efe1] text-sm font-bold text-[#a57327]">
+           AE
+          </div>
+          <div class="min-w-0">
+           <p data-template-id="request-4-name" class="canva-text m-0 font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">Amira El Hamdi</p>
+           <p data-template-id="request-4-info" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Familieshoot · 7 september</p>
+          </div>
+         </div>
+         <div class="flex items-center justify-between gap-3 sm:justify-end"><span data-template-id="request-4-status" class="canva-tag rounded-full px-2.5 py-1 text-xs font-semibold" style="background: rgb(248, 231, 223); color: rgb(166, 77, 49); font-weight: 700; font-style: normal; font-size: 15px;">Nieuw</span> <button type="button" class="request-action rounded-lg border border-[#dedbd6] px-3 py-1.5 text-sm font-semibold text-[#45433f] hover:bg-[#f5f3f0]" data-request="Amira El Hamdi">Bekijken</button>
+         </div>
+        </article>
+        <article class="request-row flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" data-searchable="Lumen Agency Eventfotografie 12 september Bevestigd">
+         <div class="flex min-w-0 items-center gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#e9eff7] text-sm font-bold text-[#4d6c97]">
+           LA
+          </div>
+          <div class="min-w-0">
+           <p data-template-id="request-5-name" class="canva-text m-0 font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">Lumen Agency</p>
+           <p data-template-id="request-5-info" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Eventfotografie · 12 september</p>
+          </div>
+         </div>
+         <div class="flex items-center justify-between gap-3 sm:justify-end"><span data-template-id="request-5-status" class="canva-tag rounded-full px-2.5 py-1 text-xs font-semibold" style="background: rgb(231, 240, 232); color: rgb(56, 112, 75); font-weight: 700; font-style: normal; font-size: 15px;">Bevestigd</span> <button type="button" class="request-action rounded-lg border border-[#dedbd6] px-3 py-1.5 text-sm font-semibold text-[#45433f] hover:bg-[#f5f3f0]" data-request="Lumen Agency">Bekijken</button>
+         </div>
+        </article>
+       </div>
+       <p id="no-search-results" data-template-id="no-search-results" class="canva-text hidden px-6 py-8 text-center" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Geen aanvragen gevonden. Probeer een andere zoekterm.</p>
+      </section>
+      <section data-template-id="work-section" class="canva-section dashboard-card rounded-2xl bg-white p-5 sm:p-6" aria-labelledby="work-heading" style="background: rgb(255, 255, 255);">
+       <div class="mb-5 flex items-center justify-between gap-4">
+        <div>
+         <h2 id="work-heading" data-template-id="work-heading-text" class="canva-text m-0 font-bold tracking-[-0.025em]" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 23px;">Recent werk</h2>
+         <p data-template-id="work-helper" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">De laatste galerijen die je hebt afgerond.</p>
+        </div><button id="toggle-gallery" type="button" data-template-id="view-work-button" class="canva-button rounded-lg px-3 py-2 text-sm font-semibold" style="background: rgb(241, 239, 233); color: rgb(85, 82, 77); font-weight: 700; font-style: normal; font-size: 15px;">Alles bekijken</button>
+       </div>
+       <div class="grid grid-cols-2 gap-3 md:grid-cols-3">
+        <figure class="group relative m-0 aspect-[4/3] overflow-hidden rounded-xl"><img data-template-id="work-image-1" loading="lazy" class="canva-image h-full w-full object-cover transition duration-500 group-hover:scale-105" src="https://images.pexels.com/photos/33123056/pexels-photo-33123056.jpeg" alt="A bride and groom embrace during a romantic outdoor wedding with mountains at sunset.">
+         <figcaption data-template-id="work-caption-1" class="canva-text absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-3 pb-3 pt-8 text-sm font-semibold" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 15px;">Noor &amp; Thomas</figcaption>
+        </figure>
+        <figure class="group relative m-0 aspect-[4/3] overflow-hidden rounded-xl"><img data-template-id="work-image-2" loading="lazy" class="canva-image h-full w-full object-cover transition duration-500 group-hover:scale-105" src="https://images.pexels.com/photos/33680688/pexels-photo-33680688.jpeg" alt="A stylish black and white portrait featuring a woman posing with elegance and confidence.">
+         <figcaption data-template-id="work-caption-2" class="canva-text absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-3 pb-3 pt-8 text-sm font-semibold" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 15px;">Portretserie Lotte</figcaption>
+        </figure>
+        <figure class="group relative m-0 aspect-[4/3] overflow-hidden rounded-xl"><img data-template-id="work-image-3" loading="lazy" class="canva-image h-full w-full object-cover transition duration-500 group-hover:scale-105" src="https://images.pexels.com/photos/34651408/pexels-photo-34651408.jpeg" alt="A serene newborn baby sleeping on a soft blanket in a cozy indoor art studio.">
+         <figcaption data-template-id="work-caption-3" class="canva-text absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-3 pb-3 pt-8 text-sm font-semibold" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 15px;">Newborn Finn</figcaption>
+        </figure>
+        <figure class="gallery-extra group relative m-0 aspect-[4/3] overflow-hidden rounded-xl"><img data-template-id="work-image-4" loading="lazy" class="canva-image h-full w-full object-cover transition duration-500 group-hover:scale-105" src="https://images.pexels.com/photos/34774347/pexels-photo-34774347.jpeg" alt="A speaker engages the audience during a tech conference, discussing future trends.">
+         <figcaption data-template-id="work-caption-4" class="canva-text absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-3 pb-3 pt-8 text-sm font-semibold" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 15px;">Future Founders</figcaption>
+        </figure>
+        <figure class="gallery-extra group relative m-0 aspect-[4/3] overflow-hidden rounded-xl"><img data-template-id="work-image-5" loading="lazy" class="canva-image h-full w-full object-cover transition duration-500 group-hover:scale-105" src="https://images.pexels.com/photos/28966013/pexels-photo-28966013.jpeg" alt="A family enjoys a warm autumn day surrounded by vibrant foliage in a park.">
+         <figcaption data-template-id="work-caption-5" class="canva-text absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-3 pb-3 pt-8 text-sm font-semibold" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 15px;">Familie Peeters</figcaption>
+        </figure>
+        <figure class="gallery-extra group relative m-0 aspect-[4/3] overflow-hidden rounded-xl"><img data-template-id="work-image-6" loading="lazy" class="canva-image h-full w-full object-cover transition duration-500 group-hover:scale-105" src="https://images.pexels.com/photos/34159010/pexels-photo-34159010.jpeg" alt="A minimalist image of three skincare product bottles on a white surface, emphasizing cleanliness and simplicity.">
+         <figcaption data-template-id="work-caption-6" class="canva-text absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-3 pb-3 pt-8 text-sm font-semibold" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 15px;">MØL Skincare</figcaption>
+        </figure>
+       </div>
+      </section>
+     </div>
+     <aside class="space-y-6" aria-label="Dashboard hulpmiddelen">
+      <section data-template-id="quick-actions-card" class="canva-card dashboard-card rounded-2xl bg-[#20201e] p-5" aria-labelledby="quick-heading" style="background: rgb(32, 32, 30);">
+       <div class="mb-4 flex items-center justify-between">
+        <div>
+         <h2 id="quick-heading" data-template-id="quick-heading-text" class="canva-text m-0 font-bold" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 23px;">Snelle acties</h2>
+         <p data-template-id="quick-helper" class="canva-text mt-1" style="color: rgb(200, 197, 190); font-weight: 400; font-style: normal; font-size: 15px;">Hou je studio in beweging.</p>
+        </div><i data-lucide="zap" class="h-5 w-5 text-[#e7b09a]" aria-hidden="true"></i>
+       </div>
+       <div class="space-y-2"><button type="button" data-quick-action="Factuurconcept geopend" data-template-id="quick-invoice-button" class="canva-button quick-action flex w-full items-center justify-between rounded-xl px-3.5 py-3 text-left text-sm font-semibold transition hover:bg-white/10" style="background: rgb(51, 50, 47); color: rgb(255, 255, 255); font-weight: 600;"> <span data-template-id="quick-invoice-label" class="canva-text" style="color: rgb(255, 255, 255); font-weight: 600; font-style: normal; font-size: 15px;">Factuur sturen</span><i data-lucide="arrow-up-right" class="h-4 w-4" aria-hidden="true"></i> </button> <button type="button" data-quick-action="Uploadmap voorbereid" data-template-id="quick-upload-button" class="canva-button quick-action flex w-full items-center justify-between rounded-xl px-3.5 py-3 text-left text-sm font-semibold transition hover:bg-white/10" style="background: rgb(51, 50, 47); color: rgb(255, 255, 255); font-weight: 600;"> <span data-template-id="quick-upload-label" class="canva-text" style="color: rgb(255, 255, 255); font-weight: 600; font-style: normal; font-size: 15px;">Upload foto's</span><i data-lucide="arrow-up-right" class="h-4 w-4" aria-hidden="true"></i> </button> <button type="button" data-quick-action="Nieuwe klantkaart voorbereid" data-template-id="quick-client-button" class="canva-button quick-action flex w-full items-center justify-between rounded-xl px-3.5 py-3 text-left text-sm font-semibold transition hover:bg-white/10" style="background: rgb(51, 50, 47); color: rgb(255, 255, 255); font-weight: 600;"> <span data-template-id="quick-client-label" class="canva-text" style="color: rgb(255, 255, 255); font-weight: 600; font-style: normal; font-size: 15px;">Nieuwe klant toevoegen</span><i data-lucide="arrow-up-right" class="h-4 w-4" aria-hidden="true"></i> </button>
+       </div>
+      </section>
+      <section data-template-id="tasks-card" class="canva-card dashboard-card rounded-2xl bg-white p-5" aria-labelledby="tasks-heading" style="background: rgb(255, 255, 255);">
+       <div class="mb-4 flex items-start justify-between gap-3">
+        <div>
+         <h2 id="tasks-heading" data-template-id="tasks-heading-text" class="canva-text m-0 font-bold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 23px;">Taken en deadlines</h2>
+         <p data-template-id="tasks-helper" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Focus voor vandaag.</p>
+        </div><span id="task-progress-label" class="rounded-full bg-[#f8e7df] px-2.5 py-1 text-xs font-bold text-[#a64d31]">1/4</span>
+       </div>
+       <div class="mb-4 h-1.5 overflow-hidden rounded-full bg-[#eeeae6]">
+        <div id="task-progress-bar" class="h-full rounded-full bg-[#c86745]" style="width:25%"></div>
+       </div>
+       <div class="space-y-3"><label class="flex cursor-pointer items-start gap-3"> <input class="task-toggle mt-1 h-4 w-4 rounded border-[#cfcac3]" type="checkbox" checked=""> <span data-template-id="task-1-text" class="canva-text text-sm leading-5" style="color: rgb(75, 73, 69); font-weight: 400; font-style: normal; font-size: 15px;">Selectie finaliseren voor Atelier Mira</span> </label> <label class="flex cursor-pointer items-start gap-3"> <input class="task-toggle mt-1 h-4 w-4 rounded border-[#cfcac3]" type="checkbox"> <span data-template-id="task-2-text" class="canva-text text-sm leading-5" style="color: rgb(75, 73, 69); font-weight: 400; font-style: normal; font-size: 15px;">Portretshoot Jonas bewerken</span> </label> <label class="flex cursor-pointer items-start gap-3"> <input class="task-toggle mt-1 h-4 w-4 rounded border-[#cfcac3]" type="checkbox"> <span data-template-id="task-3-text" class="canva-text text-sm leading-5" style="color: rgb(75, 73, 69); font-weight: 400; font-style: normal; font-size: 15px;">Factuur sturen naar Studio Kora</span> </label> <label class="flex cursor-pointer items-start gap-3"> <input class="task-toggle mt-1 h-4 w-4 rounded border-[#cfcac3]" type="checkbox"> <span data-template-id="task-4-text" class="canva-text text-sm leading-5" style="color: rgb(75, 73, 69); font-weight: 400; font-style: normal; font-size: 15px;">Galerij familie Verdonck afleveren</span> </label>
+       </div>
+      </section>
+      <section id="weather-card" data-template-id="weather-card" class="weather-card canva-card dashboard-card rounded-2xl bg-white p-5" aria-labelledby="weather-heading" style="background: rgb(255, 255, 255);">
+       <div class="mb-4 flex items-start justify-between gap-3">
+        <div>
+         <h2 id="weather-heading" data-template-id="weather-heading-text" class="canva-text m-0 font-bold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 23px;">Weer</h2>
+         <p data-template-id="weather-summary" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">14-daagse verwachting voor Antwerpen.</p>
+        </div><i data-lucide="cloud-sun" class="h-5 w-5 text-[#c86745]" aria-hidden="true"></i>
+       </div>
+       <div class="mb-4 flex items-center justify-between rounded-xl bg-[#faf5f1] px-3.5 py-3">
+        <div class="flex items-center gap-3"><i data-lucide="sun-medium" class="h-8 w-8 text-[#d28a45]" aria-hidden="true"></i>
+         <div>
+          <p data-template-id="weather-today-label" class="canva-text m-0 text-sm font-semibold" style="color: rgb(64, 61, 57); font-weight: 700; font-style: normal; font-size: 15px;">Vandaag · Dinsdag</p>
+          <p data-template-id="weather-today-rain" class="canva-text mt-0.5 text-xs" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Kans op regen 20%</p>
+         </div>
+        </div>
+        <p data-template-id="weather-today-temp" class="canva-text m-0 text-2xl font-bold tracking-[-0.04em]" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 28px;">24°</p>
+       </div>
+       <div id="weather-forecast" class="weather-forecast space-y-1.5">
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9a9894]"><span>Dag</span><span>Weer</span><span>Min</span><span>Max</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 rounded-lg bg-[#faf9f7] px-2 py-2 text-sm"><span data-template-id="weather-day-1" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Vandaag</span><i data-lucide="sun" class="h-4 w-4 text-[#d28a45]"></i><span data-template-id="weather-min-1" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">15°</span><span data-template-id="weather-max-1" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">24°</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 px-2 py-2 text-sm"><span data-template-id="weather-day-2" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Woensdag</span><i data-lucide="cloud-sun" class="h-4 w-4 text-[#8d9aa3]"></i><span data-template-id="weather-min-2" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">14°</span><span data-template-id="weather-max-2" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">22°</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 rounded-lg bg-[#faf9f7] px-2 py-2 text-sm"><span data-template-id="weather-day-3" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Donderdag</span><i data-lucide="cloud-rain" class="h-4 w-4 text-[#6d8ea3]"></i><span data-template-id="weather-min-3" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">13°</span><span data-template-id="weather-max-3" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">20°</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 px-2 py-2 text-sm"><span data-template-id="weather-day-4" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Vrijdag</span><i data-lucide="cloud-sun" class="h-4 w-4 text-[#8d9aa3]"></i><span data-template-id="weather-min-4" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">12°</span><span data-template-id="weather-max-4" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">21°</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 rounded-lg bg-[#faf9f7] px-2 py-2 text-sm"><span data-template-id="weather-day-5" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Zaterdag</span><i data-lucide="sun" class="h-4 w-4 text-[#d28a45]"></i><span data-template-id="weather-min-5" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">14°</span><span data-template-id="weather-max-5" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">23°</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 px-2 py-2 text-sm"><span data-template-id="weather-day-6" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Zondag</span><i data-lucide="cloud-rain" class="h-4 w-4 text-[#6d8ea3]"></i><span data-template-id="weather-min-6" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">15°</span><span data-template-id="weather-max-6" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">25°</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 rounded-lg bg-[#faf9f7] px-2 py-2 text-sm"><span data-template-id="weather-day-7" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Maandag</span><i data-lucide="sun" class="h-4 w-4 text-[#d28a45]"></i><span data-template-id="weather-min-7" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">14°</span><span data-template-id="weather-max-7" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">22°</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 rounded-lg bg-[#faf9f7] px-2 py-2 text-sm"><span data-template-id="weather-day-8" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Dinsdag</span><i data-lucide="cloud-sun" class="h-4 w-4 text-[#8d9aa3]"></i><span data-template-id="weather-min-8" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">13°</span><span data-template-id="weather-max-8" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">21°</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 px-2 py-2 text-sm"><span data-template-id="weather-day-9" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Woensdag</span><i data-lucide="sun" class="h-4 w-4 text-[#d28a45]"></i><span data-template-id="weather-min-9" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">12°</span><span data-template-id="weather-max-9" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">20°</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 rounded-lg bg-[#faf9f7] px-2 py-2 text-sm"><span data-template-id="weather-day-10" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Donderdag</span><i data-lucide="cloud-rain" class="h-4 w-4 text-[#6d8ea3]"></i><span data-template-id="weather-min-10" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">11°</span><span data-template-id="weather-max-10" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">19°</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 px-2 py-2 text-sm"><span data-template-id="weather-day-11" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Vrijdag</span><i data-lucide="sun" class="h-4 w-4 text-[#d28a45]"></i><span data-template-id="weather-min-11" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">13°</span><span data-template-id="weather-max-11" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">22°</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 rounded-lg bg-[#faf9f7] px-2 py-2 text-sm"><span data-template-id="weather-day-12" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Zaterdag</span><i data-lucide="cloud-sun" class="h-4 w-4 text-[#8d9aa3]"></i><span data-template-id="weather-min-12" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">14°</span><span data-template-id="weather-max-12" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">24°</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 px-2 py-2 text-sm"><span data-template-id="weather-day-13" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Zondag</span><i data-lucide="sun" class="h-4 w-4 text-[#d28a45]"></i><span data-template-id="weather-min-13" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">15°</span><span data-template-id="weather-max-13" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">26°</span>
+        </div>
+        <div class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 rounded-lg bg-[#faf9f7] px-2 py-2 text-sm"><span data-template-id="weather-day-14" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 400; font-style: normal; font-size: 15px;">Maandag</span><i data-lucide="cloud-rain" class="h-4 w-4 text-[#6d8ea3]"></i><span data-template-id="weather-min-14" class="canva-text text-[#777773]" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">14°</span><span data-template-id="weather-max-14" class="canva-text font-semibold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 15px;">23°</span>
+        </div>
+       </div>
+       <details class="mt-3"><summary data-template-id="weather-details-link" class="canva-link cursor-pointer text-sm font-semibold text-[#a64d31]" style="color: rgb(166, 77, 49); font-weight: 700; font-style: normal; font-size: 15px;">Toon 2 weken</summary>
+        <div class="mt-2 space-y-1 text-xs text-[#777773]">
+         <p>De verwachting wordt dagelijks bijgewerkt.</p>
+         <p>De komende week blijft wisselend met zonnige perioden.</p>
+        </div>
+       </details>
+      </section>
+      <section data-template-id="messages-card" class="canva-card dashboard-card rounded-2xl bg-white p-5" aria-labelledby="messages-heading" style="background: rgb(255, 255, 255);">
+       <div class="mb-4 flex items-center justify-between">
+        <div>
+         <h2 id="messages-heading" data-template-id="messages-heading-text" class="canva-text m-0 font-bold" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 23px;">Berichten</h2>
+         <p data-template-id="messages-helper" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Recente klantcommunicatie.</p>
+        </div><span class="flex h-8 w-8 items-center justify-center rounded-full bg-[#f1efe9] text-[#5c5a55]" aria-hidden="true"><i data-lucide="message-circle" class="h-4 w-4"></i></span>
+       </div>
+       <div class="space-y-4">
+        <article class="border-b border-[#efeeeb] pb-3">
+         <div class="flex items-center justify-between gap-3">
+          <p data-template-id="message-1-name" class="canva-text m-0 text-sm font-semibold" style="color: rgb(41, 40, 37); font-weight: 700; font-style: normal; font-size: 15px;">Lisa Vermeulen</p><span data-template-id="message-1-time" class="canva-text text-xs" style="color: rgb(150, 147, 142); font-weight: 400; font-style: normal; font-size: 15px;">11:42</span>
+         </div>
+         <p data-template-id="message-1-copy" class="canva-text mt-1.5 text-sm leading-5" style="color: rgb(111, 109, 104); font-weight: 400; font-style: normal; font-size: 15px;">“De locatie aan het MAS lijkt me perfect. Tot donderdag!”</p>
+        </article>
+        <article>
+         <div class="flex items-center justify-between gap-3">
+          <p data-template-id="message-2-name" class="canva-text m-0 text-sm font-semibold" style="color: rgb(41, 40, 37); font-weight: 700; font-style: normal; font-size: 15px;">Noor &amp; Thomas</p><span data-template-id="message-2-time" class="canva-text text-xs" style="color: rgb(150, 147, 142); font-weight: 400; font-style: normal; font-size: 15px;">Gisteren</span>
+         </div>
+         <p data-template-id="message-2-copy" class="canva-text mt-1.5 text-sm leading-5" style="color: rgb(111, 109, 104); font-weight: 400; font-style: normal; font-size: 15px;">“We hebben de planning ontvangen, dankjewel voor de heldere uitleg.”</p>
+        </article>
+       </div>
+      </section>
+     </aside>
+    </div>
+   </main>
+   <footer class="border-t border-[#ece8e3] bg-[#f7f4ef] py-4">
+     <div class="mx-auto flex w-full max-w-7xl items-center justify-center px-5 text-sm text-[#6a6863] sm:px-8 lg:px-10">
+       <p class="m-0 flex items-center gap-1.5">
+         <span aria-hidden="true">&copy;</span>
+         <span id="copyright-year"></span>
+         <span>Vandenhoven Nokah</span>
+       </p>
+     </div>
+   </footer>
+   <div id="toast" class="toast fixed bottom-5 right-5 z-40 max-w-[calc(100%-2.5rem)] rounded-xl bg-[#20201e] px-4 py-3 text-sm font-medium text-white shadow-xl" role="status" aria-live="polite"></div>
+   <div id="booking-modal" class="modal-layer fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4" role="dialog" aria-modal="true" aria-labelledby="booking-modal-heading">
+    <div class="modal-card w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
+     <div class="mb-5 flex items-start justify-between gap-4">
+      <div>
+       <h2 id="booking-modal-heading" data-template-id="booking-modal-heading-text" class="canva-text m-0 font-bold tracking-[-0.025em]" style="color: rgb(32, 32, 30); font-weight: 700; font-style: normal; font-size: 23px;">Nieuwe boeking</h2>
+       <p data-template-id="booking-modal-helper" class="canva-text mt-1" style="color: rgb(119, 119, 115); font-weight: 400; font-style: normal; font-size: 15px;">Voeg een nieuwe shoot toe aan je planning voor deze sessie.</p>
+      </div><button id="close-booking-modal" type="button" aria-label="Sluiten" class="rounded-lg p-2 text-[#6a6863] hover:bg-[#f3f1ee]"><i data-lucide="x" class="h-5 w-5"></i></button>
+     </div>
+     <form id="booking-form">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+       <div class="sm:col-span-2"><label data-template-id="booking-name-label" class="canva-text mb-1.5 block text-sm font-semibold" for="booking-name" style="color: rgb(61, 59, 55); font-weight: 700; font-style: normal; font-size: 15px;">Klantnaam</label> <input id="booking-name" required="" type="text" class="w-full rounded-xl border border-[#dedbd6] px-3 py-2.5 text-sm" placeholder="Naam van klant">
+       </div>
+       <div><label data-template-id="booking-type-label" class="canva-text mb-1.5 block text-sm font-semibold" for="booking-type" style="color: rgb(61, 59, 55); font-weight: 700; font-style: normal; font-size: 15px;">Type shoot</label> <select id="booking-type" class="w-full rounded-xl border border-[#dedbd6] bg-white px-3 py-2.5 text-sm"> <option>Portretshoot</option> <option>Familieshoot</option> <option>Brandingshoot</option> <option>Eventfotografie</option> <option>Bruiloft</option> </select>
+       </div>
+       <div><label data-template-id="booking-date-label" class="canva-text mb-1.5 block text-sm font-semibold" for="booking-date" style="color: rgb(61, 59, 55); font-weight: 700; font-style: normal; font-size: 15px;">Datum</label> <input id="booking-date" required="" type="date" class="w-full rounded-xl border border-[#dedbd6] px-3 py-2.5 text-sm">
+       </div>
+      </div>
+      <div class="mt-6 flex justify-end gap-3"><button id="cancel-booking-modal" type="button" data-template-id="booking-cancel-button" class="canva-button rounded-xl px-4 py-2.5 text-sm font-semibold" style="background: rgb(241, 239, 233); color: rgb(85, 82, 77); font-weight: 700; font-style: normal; font-size: 15px;">Annuleren</button> <button id="save-booking-button" type="submit" data-template-id="booking-save-button" class="canva-button primary-action rounded-xl px-4 py-2.5 text-sm font-semibold" style="background: rgb(200, 103, 69); color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 15px;">Toevoegen aan planning</button>
+      </div>
+     </form>
+    </div>
+   </div>
+  </div>
+  <script src="/_sdk/a051f9537983733d.editing_sdk.js" integrity="sha512-IWn3eBHnVt7zQ0Rp79J72qSgJoLbskCA9lcfY4retf+5km4LjuhSHpvx+182KCHmEZ6EbJtWqVsybpV8Sd8PQQ=="></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      document.getElementById("copyright-year").textContent = new Date().getFullYear();
+      const today = new Date();
+      const formatDayMonth = (date) => String(date.getDate()).padStart(2, "0") + "/" + String(date.getMonth() + 1).padStart(2, "0");
+      const formatWeekday = (date) => new Intl.DateTimeFormat("nl-BE", { weekday: "long" }).format(date).toLowerCase();
+      const weatherTodayLabel = document.querySelector('[data-template-id="weather-today-label"]');
+      weatherTodayLabel.textContent = "Vandaag " + formatDayMonth(today);
+      for (let index = 1; index <= 14; index += 1) {
+        const weatherDayLabel = document.querySelector('[data-template-id="weather-day-' + index + '"]');
+        if (!weatherDayLabel) continue;
+        const date = new Date(today);
+        date.setDate(today.getDate() + index - 1);
+        if (index === 1) {
+          weatherDayLabel.textContent = "Vandaag " + formatDayMonth(date);
+        } else {
+          weatherDayLabel.textContent = formatWeekday(date) + " " + formatDayMonth(date);
+        }
+      }
+
+      const toast = document.getElementById("toast");
+      let toastTimer;
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("is-visible");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 2800);
+      }
+
+      const modal = document.getElementById("booking-modal");
+      const openModal = document.getElementById("open-booking-modal");
+      const closeModal = document.getElementById("close-booking-modal");
+      const cancelModal = document.getElementById("cancel-booking-modal");
+      const bookingForm = document.getElementById("booking-form");
+
+      function setModal(open) {
+        modal.classList.toggle("is-open", open);
+        if (open) {
+          setTimeout(() => document.getElementById("booking-name").focus(), 50);
+        } else {
+          openModal.focus();
+        }
+      }
+
+      openModal.addEventListener("click", () => setModal(true));
+      closeModal.addEventListener("click", () => setModal(false));
+      cancelModal.addEventListener("click", () => setModal(false));
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) setModal(false);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && modal.classList.contains("is-open")) setModal(false);
+      });
+
+      bookingForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const name = document.getElementById("booking-name").value.trim();
+        const type = document.getElementById("booking-type").value;
+        const date = document.getElementById("booking-date").value;
+
+        if (!name || !date) return;
+
+        const item = document.createElement("div");
+        item.className = "mt-4 flex items-center gap-3 rounded-xl border border-[#ead8d1] bg-[#fff9f6] px-4 py-3 text-sm";
+        item.innerHTML = '<span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#f8e7df] text-[#b65a3a]"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></span><p class="m-0 text-[#403d39]"><strong>' + name.replace(/[&<>"']/g, "") + '</strong> · ' + type + ' · ' + date + '</p>';
+        document.getElementById("timeline-list").appendChild(item);
+
+        bookingForm.reset();
+        setModal(false);
+        showToast("Nieuwe boeking is toegevoegd aan je planning.");
+      });
+
+      document.querySelectorAll(".request-action").forEach((button) => {
+        button.addEventListener("click", () => {
+          button.textContent = "Bekeken";
+          button.classList.add("border-[#dcb6a7]", "bg-[#fff8f5]", "text-[#a64d31]");
+          button.disabled = true;
+          showToast(button.dataset.request + " is gemarkeerd als bekeken.");
+        });
+      });
+
+      const searchInput = document.getElementById("dashboard-search");
+      const requestRows = [...document.querySelectorAll("[data-searchable]")];
+      const noResults = document.getElementById("no-search-results");
+      const requestCount = document.getElementById("request-count");
+
+      searchInput.addEventListener("input", () => {
+        const query = searchInput.value.trim().toLowerCase();
+        let visible = 0;
+        requestRows.forEach((row) => {
+          const match = row.dataset.searchable.toLowerCase().includes(query);
+          row.classList.toggle("hidden", !match);
+          if (match) visible++;
+        });
+        noResults.classList.toggle("hidden", visible !== 0);
+        requestCount.textContent = query ? visible + " gevonden" : "5 open";
+      });
+
+      const checks = [...document.querySelectorAll(".task-toggle")];
+      const progressLabel = document.getElementById("task-progress-label");
+      const progressBar = document.getElementById("task-progress-bar");
+
+      function updateProgress() {
+        const complete = checks.filter((check) => check.checked).length;
+        progressLabel.textContent = complete + "/" + checks.length;
+        progressBar.style.width = (complete / checks.length * 100) + "%";
+      }
+
+      checks.forEach((check) => check.addEventListener("change", updateProgress));
+
+      document.querySelectorAll(".quick-action").forEach((button) => {
+        button.addEventListener("click", () => showToast(button.dataset.quickAction + "."));
+      });
+
+      const galleryButton = document.getElementById("toggle-gallery");
+      const extraGalleryItems = document.querySelectorAll(".gallery-extra");
+      let galleryOpen = false;
+
+      galleryButton.addEventListener("click", () => {
+        galleryOpen = !galleryOpen;
+        extraGalleryItems.forEach((item) => item.classList.toggle("is-visible", galleryOpen));
+        galleryButton.textContent = galleryOpen ? "Minder tonen" : "Alles bekijken";
+      });
+
+      document.querySelector("#weather-card details")?.addEventListener("toggle", (event) => {
+        document.getElementById("weather-card").classList.toggle("is-expanded", event.target.open);
+      });
+
+      document.getElementById("focus-today").addEventListener("click", () => {
+        document.getElementById("schedule-heading").scrollIntoView({ behavior: "smooth", block: "center" });
+        showToast("Planning voor vandaag staat centraal.");
+      });
+    });
+  </script>
+ 
+</body></html>
