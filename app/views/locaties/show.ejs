@@ -1,0 +1,76 @@
+<%- include('../partials/head', { title: title }) %>
+<div class="app-shell flex min-h-screen bg-soft">
+  <%- include('../partials/sidebar', { currentPath: currentPath }) %>
+  <div class="min-w-0 flex-1">
+    <header class="border-b border-line bg-white/80 px-6 py-5 backdrop-blur lg:px-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="eyebrow mb-2">Locatiedetail</p>
+          <h1 class="text-2xl font-bold tracking-[-0.03em] text-ink"><%= pageTitle %></h1>
+          <p class="muted mt-2 text-sm"><%= pageSubtitle %></p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <a href="/locaties/<%= locatie.locatieid %>/edit" class="btn btn-secondary">
+            <i data-lucide="pencil" class="h-4 w-4"></i> Bewerk
+          </a>
+          <form action="/locaties/<%= locatie.locatieid %>" method="POST" onsubmit="return confirm('Locatie verwijderen?');">
+            <input type="hidden" name="_method" value="DELETE" />
+            <button type="submit" class="btn btn-danger">
+              <i data-lucide="trash-2" class="h-4 w-4"></i> Verwijder
+            </button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <main class="space-y-6 px-6 py-6 lg:px-8">
+      <%- include('../partials/flash', { feedback: feedback }) %>
+
+      <div class="grid gap-6 md:grid-cols-2">
+        <section class="surface-card p-6">
+          <h2 class="mb-5 text-lg font-bold tracking-[-0.02em]">Locatiegegevens</h2>
+          <dl class="space-y-4">
+            <div class="info-item">
+              <dt class="eyebrow mb-1">Naam</dt>
+              <dd class="text-xl font-bold text-ink"><%= locatie.naam %></dd>
+            </div>
+            <div class="info-item">
+              <dt class="eyebrow mb-1">Type</dt>
+              <dd><span class="badge status-default"><%= locatie.type || '—' %></span></dd>
+            </div>
+            <div class="info-item">
+              <dt class="eyebrow mb-1">Adres</dt>
+              <dd class="font-semibold"><%= formatAddress(locatie) %></dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="surface-card p-6">
+          <h2 class="mb-5 text-lg font-bold tracking-[-0.02em]">Shoots op deze locatie</h2>
+          <% if (shoots.length === 0) { %>
+            <p class="muted text-sm">Nog geen shoots op deze locatie.</p>
+          <% } else { %>
+            <div class="space-y-3">
+              <% shoots.forEach(s => { %>
+                <a href="/fotoshoots/<%= s.fotoshootid %>" class="flex items-center justify-between rounded-xl border border-line bg-soft px-4 py-3 hover:bg-white transition-colors">
+                  <div>
+                    <p class="font-semibold text-ink"><%= s.klant_naam %></p>
+                    <p class="muted text-xs"><%= formatDate(s.datum) %> · <%= s.pakket_naam || '—' %></p>
+                  </div>
+                  <span class="<%= badgeClass(s.status) %>"><%= s.status %></span>
+                </a>
+              <% }) %>
+            </div>
+          <% } %>
+        </section>
+      </div>
+
+      <div class="flex gap-3">
+        <a href="/locaties" class="btn btn-secondary">
+          <i data-lucide="arrow-left" class="h-4 w-4"></i> Terug naar locaties
+        </a>
+      </div>
+    </main>
+  </div>
+</div>
+<%- include('../partials/footer') %>

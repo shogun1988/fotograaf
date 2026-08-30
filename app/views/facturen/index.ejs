@@ -1,0 +1,91 @@
+<%- include('../partials/head', { title: title }) %>
+<div class="app-shell flex min-h-screen bg-soft">
+  <%- include('../partials/sidebar', { currentPath: currentPath }) %>
+
+  <div class="min-w-0 flex-1">
+    <header class="border-b border-line bg-white/80 px-6 py-5 backdrop-blur lg:px-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="eyebrow mb-2">Facturatie</p>
+          <h1 class="text-2xl font-bold tracking-[-0.03em] text-ink"><%= pageTitle %></h1>
+          <p class="muted mt-2 text-sm"><%= pageSubtitle %></p>
+        </div>
+        <a href="/facturen/new" class="btn btn-primary">
+          <i data-lucide="plus" class="h-4 w-4"></i>
+          Nieuwe factuur
+        </a>
+      </div>
+    </header>
+
+    <main class="space-y-6 px-6 py-6 lg:px-8">
+      <section class="grid gap-4 md:grid-cols-3">
+        <article class="surface-card p-5">
+          <p class="muted text-sm font-medium">Open facturen</p>
+          <p class="metric-value mt-3"><%= totalen.open_aantal %></p>
+          <p class="mt-4 text-sm font-semibold text-accent"><%= formatCurrency(totalen.open_bedrag) %> openstaand</p>
+        </article>
+        <article class="surface-card p-5">
+          <p class="muted text-sm font-medium">Betaalde facturen</p>
+          <p class="metric-value mt-3"><%= totalen.betaald_aantal %></p>
+          <p class="mt-4 text-sm font-semibold text-sage-ink"><%= formatCurrency(totalen.betaald_bedrag) %> ontvangen</p>
+        </article>
+        <article class="surface-card p-5">
+          <p class="muted text-sm font-medium">Totaal facturen</p>
+          <p class="metric-value mt-3"><%= totalen.totaal_aantal %></p>
+          <p class="mt-4 text-sm font-semibold text-ink">Administratief volledig overzicht</p>
+        </article>
+      </section>
+
+      <section class="surface-card p-0">
+        <% if (facturen.length === 0) { %>
+          <div class="empty-state">Nog geen facturen in het systeem.</div>
+        <% } else { %>
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Factuur#</th>
+                  <th>Klant</th>
+                  <th>Datum</th>
+                  <th>Bedrag</th>
+                  <th>Status</th>
+                  <th>Fotoshoot</th>
+                  <th>Acties</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% facturen.forEach((factuur) => { %>
+                  <tr>
+                    <td class="font-semibold">#<%= factuur.factuurid %></td>
+                    <td><%= factuur.klant_naam || '—' %></td>
+                    <td><%= formatDate(factuur.datum) %></td>
+                    <td><%= formatCurrency(factuur.totaalbedrag) %></td>
+                    <td><span class="<%= badgeClass(factuur.status) %>"><%= factuur.status %></span></td>
+                    <td>
+                      <% if (factuur.fotoshoot_id) { %>
+                        <a href="/fotoshoots/<%= factuur.fotoshoot_id %>" class="text-accent font-semibold">Shoot #<%= factuur.fotoshoot_id %></a>
+                      <% } else { %>
+                        —
+                      <% } %>
+                    </td>
+                    <td>
+                      <div class="flex flex-wrap gap-2">
+                        <a href="/facturen/<%= factuur.factuurid %>" class="btn btn-secondary">Bekijk</a>
+                        <a href="/facturen/<%= factuur.factuurid %>/edit" class="btn btn-secondary">Bewerk</a>
+                        <form action="/facturen/<%= factuur.factuurid %>" method="POST" onsubmit="return confirm('Weet je zeker dat je deze factuur wilt verwijderen?');">
+                          <input type="hidden" name="_method" value="DELETE" />
+                          <button type="submit" class="btn btn-danger">Verwijder</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </section>
+    </main>
+  </div>
+</div>
+<%- include('../partials/footer') %>

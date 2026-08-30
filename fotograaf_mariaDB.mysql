@@ -1,0 +1,262 @@
+-- ============================================
+-- DATABASE STRUCTUUR VOOR FOTOGRAAF-SYSTEEM
+-- MariaDB-versie
+-- ============================================
+
+-- Verwijder bestaande tabellen in juiste volgorde (rekening houden met FK-afhankelijkheden)
+DROP TABLE IF EXISTS Levering;
+DROP TABLE IF EXISTS Foto;
+DROP TABLE IF EXISTS Betaling;
+DROP TABLE IF EXISTS Factuur;
+DROP TABLE IF EXISTS Fotoshoot;
+DROP TABLE IF EXISTS Locatie;
+DROP TABLE IF EXISTS Pakket;
+DROP TABLE IF EXISTS Klant;
+DROP TABLE IF EXISTS Address;
+
+-- ============================================
+-- TABEL: Address
+-- Bevat gestructureerde adresgegevens voor zowel Klant als Locatie
+-- ============================================
+CREATE TABLE Address (
+    AddressID  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    straat     VARCHAR(100) NOT NULL,
+    huisnummer VARCHAR(10)  NOT NULL,
+    busnummer  VARCHAR(10),
+    postcode   VARCHAR(10)  NOT NULL,
+    stad       VARCHAR(100) NOT NULL,
+    land       VARCHAR(50)  NOT NULL DEFAULT 'Belgie'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO Address (straat, huisnummer, busnummer, postcode, stad, land) VALUES
+('Kerkstraat',     '12',  NULL, '9000', 'Gent',        'Belgie'),  -- 1  -> Klant Jan
+('Stationsstraat', '5',   NULL, '2000', 'Antwerpen',   'Belgie'),  -- 2  -> Klant Sara
+('Klepelstraat',   '5',   NULL, '2000', 'Antwerpen',   'Belgie'),  -- 3  -> Klant Sara 2
+('Markt',          '22',  NULL, '8000', 'Brugge',      'Belgie'),  -- 4  -> Klant Tom
+('Hoogstraat',     '88',  NULL, '2800', 'Mechelen',    'Belgie'),  -- 5  -> Klant Lies
+('Lange Steenweg', '10',  NULL, '9000', 'Gent',        'Belgie'),  -- 6  -> Klant Peter
+('Kouter',         '3',   NULL, '9000', 'Gent',        'Belgie'),  -- 7  -> Klant Nina
+('Veldstraat',     '99',  NULL, '9100', 'Sint-Niklaas','Belgie'),  -- 8  -> Klant Ruben
+('Dorp',           '1',   NULL, '9160', 'Lokeren',     'Belgie'),  -- 9  -> Klant Emma
+('Parklaan',       '7',   NULL, '9000', 'Gent',        'Belgie'),  -- 10 -> Klant Louis / Locatie Park Gent
+('Nieuwstraat',    '44',  NULL, '9300', 'Aalst',       'Belgie'),  -- 11 -> Klant Julie
+('Stationsstraat', '10',  NULL, '9100', 'Sint-Niklaas','Belgie'),  -- 12 -> Locatie Studio Sint-Niklaas
+('Meir',           '22',  NULL, '2000', 'Antwerpen',   'Belgie'),  -- 13 -> Locatie Kantoor Antwerpen
+('Zeedijk',        '100', NULL, '8400', 'Oostende',    'Belgie'),  -- 14 -> Locatie Strand Oostende
+('Kammenstraat',   '55',  NULL, '2000', 'Antwerpen',   'Belgie'),  -- 15 -> Locatie Studio Antwerpen
+('Bosweg',         '12',  NULL, '9160', 'Lokeren',     'Belgie'),  -- 16 -> Locatie Bos Lokeren
+('Kasteelstraat',  '1',   NULL, '1750', 'Lennik',      'Belgie'),  -- 17 -> Locatie Kasteel Gaasbeek
+('Zavelstraat',    '8',   NULL, '1000', 'Brussel',     'Belgie'),  -- 18 -> Locatie Loft Brussel
+('Korenmarkt',     '3',   NULL, '9000', 'Gent',        'Belgie'),  -- 19 -> Locatie Studio Gent
+('Industrieweg',   '20',  NULL, '2800', 'Mechelen',    'Belgie');  -- 20 -> Locatie Bedrijf Mechelen
+
+-- ============================================
+-- TABEL: Klant
+-- adres_id verwijst naar Address(AddressID)
+-- ============================================
+CREATE TABLE Klant (
+    KlantID    INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    voornaam   VARCHAR(50)  NOT NULL,
+    achternaam VARCHAR(50)  NOT NULL,
+    email      VARCHAR(100) NOT NULL UNIQUE,
+    telefoon   VARCHAR(20),
+    adres_id   INT,
+    type_klant VARCHAR(50),
+    CONSTRAINT fk_klant_address FOREIGN KEY (adres_id) REFERENCES Address(AddressID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO Klant (voornaam, achternaam, email, telefoon, adres_id, type_klant) VALUES
+('Jan',   'Peeters',   'jan.peeters@example.com',    '0478123456',  1, 'particulier'),
+('Sara',  'De Smet',   'sara.desmet@example.com',    '0489123456',  2, 'bedrijf'),
+('Sara',  'De Smet',   'sara.desmet1@example.com',   '0489123458',  3, 'bedrijf'),
+('Tom',   'Vermeulen', 'tom.vermeulen@example.com',  '0466123456',  4, 'particulier'),
+('Lies',  'Van Damme', 'lies.vandamme@example.com',  '0499123456',  5, 'bedrijf'),
+('Peter', 'Jacobs',    'peter.jacobs@example.com',   '0477123456',  6, 'particulier'),
+('Nina',  'Willems',   'nina.willems@example.com',   '0487123456',  7, 'bedrijf'),
+('Ruben', 'Claes',     'ruben.claes@example.com',    '0465123456',  8, 'particulier'),
+('Emma',  'Maes',      'emma.maes@example.com',      '0498123456',  9, 'particulier'),
+('Louis', 'Goossens',  'louis.goossens@example.com', '0479123456', 10, 'bedrijf'),
+('Julie', 'De Vos',    'julie.devos@example.com',    '0486123456', 11, 'particulier');
+
+-- ============================================
+-- TABEL: Pakket
+-- ============================================
+CREATE TABLE Pakket (
+    PakketID                INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    naam                    VARCHAR(50)   NOT NULL,
+    beschrijving            TEXT,
+    prijs                   DECIMAL(10,2) NOT NULL,
+    aantal_fotos_inbegrepen INT,
+    levertijd_dagen         INT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO Pakket (naam, beschrijving, prijs, aantal_fotos_inbegrepen, levertijd_dagen) VALUES
+('Basic',          'Kleine shoot, 10 fotos',           99.00,   10,  3),
+('Premium',        'Uitgebreide shoot, 25 fotos',      199.00,  25,  5),
+('Deluxe',         'Grote shoot, 50 fotos',            349.00,  50,  7),
+('Event',          'Fotoshoot voor evenementen',       499.00, 100, 10),
+('Wedding Basic',  'Huwelijksreportage basis',         799.00, 150, 14),
+('Wedding Premium','Huwelijksreportage premium',      1299.00, 300, 21),
+('Portrait',       'Portretshoot',                    149.00,  15,  4),
+('Family',         'Familieshoot',                    249.00,  30,  5),
+('Business',       'Zakelijke fotos',                 299.00,  40,  6),
+('Product',        'Productfotografie',               199.00,  20,  4);
+
+-- ============================================
+-- TABEL: Locatie
+-- adres_id verwijst naar Address(AddressID)
+-- ============================================
+CREATE TABLE Locatie (
+    LocatieID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    naam      VARCHAR(100) NOT NULL,
+    adres_id  INT,
+    type      VARCHAR(50),
+    CONSTRAINT fk_locatie_address FOREIGN KEY (adres_id) REFERENCES Address(AddressID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO Locatie (naam, adres_id, type) VALUES
+('Studio Sint-Niklaas', 12, 'studio'),
+('Park Gent',           10, 'buiten'),
+('Kantoor Antwerpen',   13, 'bedrijf'),
+('Strand Oostende',     14, 'buiten'),
+('Studio Antwerpen',    15, 'studio'),
+('Bos Lokeren',         16, 'buiten'),
+('Kasteel Gaasbeek',    17, 'buiten'),
+('Loft Brussel',        18, 'binnen'),
+('Studio Gent',         19, 'studio'),
+('Bedrijf Mechelen',    20, 'bedrijf');
+
+-- ============================================
+-- TABEL: Fotoshoot
+-- ============================================
+CREATE TABLE Fotoshoot (
+    FotoshootID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    klant_id    INT,
+    pakket_id   INT,
+    locatie_id  INT,
+    datum       DATE,
+    starttijd   TIME,
+    eindtijd    TIME,
+    status      VARCHAR(50),
+    opmerkingen TEXT,
+    CONSTRAINT fk_fotoshoot_klant FOREIGN KEY (klant_id) REFERENCES Klant(KlantID),
+    CONSTRAINT fk_fotoshoot_pakket FOREIGN KEY (pakket_id) REFERENCES Pakket(PakketID),
+    CONSTRAINT fk_fotoshoot_locatie FOREIGN KEY (locatie_id) REFERENCES Locatie(LocatieID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO Fotoshoot (klant_id, pakket_id, locatie_id, datum, starttijd, eindtijd, status, opmerkingen) VALUES
+(1,  1,  1,  '2024-01-10', '10:00', '11:00', 'gepland',   ''),
+(2,  2,  2,  '2024-01-12', '14:00', '16:00', 'afgewerkt', 'Zeer goede shoot'),
+(3,  3,  3,  '2024-01-15', '09:00', '12:00', 'gepland',   ''),
+(4,  4,  4,  '2024-01-20', '13:00', '17:00', 'gepland',   ''),
+(5,  5,  5,  '2024-01-22', '11:00', '18:00', 'afgewerkt', 'Huwelijk'),
+(6,  6,  6,  '2024-01-25', '08:00', '20:00', 'gepland',   ''),
+(7,  7,  7,  '2024-01-28', '10:00', '12:00', 'afgewerkt', ''),
+(8,  8,  8,  '2024-02-01', '15:00', '17:00', 'gepland',   ''),
+(9,  9,  9,  '2024-02-05', '09:00', '11:00', 'afgewerkt', ''),
+(10, 10, 10, '2024-02-10', '10:00', '13:00', 'gepland',   '');
+
+-- ============================================
+-- TABEL: Factuur
+-- ============================================
+CREATE TABLE Factuur (
+    FactuurID    INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    klant_id     INT,
+    fotoshoot_id INT,
+    datum        DATE,
+    totaalbedrag DECIMAL(10,2),
+    status       VARCHAR(50),
+    CONSTRAINT fk_factuur_klant FOREIGN KEY (klant_id) REFERENCES Klant(KlantID),
+    CONSTRAINT fk_factuur_fotoshoot FOREIGN KEY (fotoshoot_id) REFERENCES Fotoshoot(FotoshootID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO Factuur (klant_id, fotoshoot_id, datum, totaalbedrag, status) VALUES
+(1,  1,  '2024-01-11',   99.00, 'open'),
+(2,  2,  '2024-01-13',  199.00, 'betaald'),
+(3,  3,  '2024-01-16',  349.00, 'open'),
+(4,  4,  '2024-01-21',  499.00, 'open'),
+(5,  5,  '2024-01-23',  799.00, 'betaald'),
+(6,  6,  '2024-01-26', 1299.00, 'open'),
+(7,  7,  '2024-01-29',  149.00, 'betaald'),
+(8,  8,  '2024-02-02',  249.00, 'open'),
+(9,  9,  '2024-02-06',  299.00, 'betaald'),
+(10, 10, '2024-02-11',  199.00, 'open');
+
+-- ============================================
+-- TABEL: Betaling
+-- Elke betaling verwijst naar een Factuur
+-- ============================================
+CREATE TABLE Betaling (
+    BetalingID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    factuur_id INT,
+    datum      DATE,
+    bedrag     DECIMAL(10,2),
+    methode    VARCHAR(50),
+    CONSTRAINT fk_betaling_factuur FOREIGN KEY (factuur_id) REFERENCES Factuur(FactuurID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO Betaling (factuur_id, datum, bedrag, methode) VALUES
+(2,  '2024-01-13',  199.00, 'bancontact'),
+(3,  '2024-01-16',  349.00, 'overschrijving'),
+(5,  '2024-01-23',  799.00, 'overschrijving'),
+(7,  '2024-01-29',  149.00, 'cash'),
+(9,  '2024-02-06',  299.00, 'visa'),
+(1,  '2024-01-12',   50.00, 'bancontact'),
+(4,  '2024-01-22',  250.00, 'overschrijving'),
+(6,  '2024-01-27',  650.00, 'overschrijving'),
+(8,  '2024-02-03',  249.00, 'visa'),
+(10, '2024-02-12',  199.00, 'bancontact');
+
+-- ============================================
+-- TABEL: Foto
+-- Fotoshoot_id verwijst naar Fotoshoot(FotoshootID)
+-- ============================================
+CREATE TABLE Foto (
+    FotoID          INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    Fotoshoot_id    INT,
+    bestandsnaam    VARCHAR(200),
+    resolutie       VARCHAR(50),
+    formaat         VARCHAR(20),
+    is_geselecteerd BOOLEAN,
+    is_bewerkt      BOOLEAN,
+    CONSTRAINT fk_foto_fotoshoot FOREIGN KEY (Fotoshoot_id) REFERENCES Fotoshoot(FotoshootID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO Foto (Fotoshoot_id, bestandsnaam, resolutie, formaat, is_geselecteerd, is_bewerkt) VALUES
+(1,  'shoot1_foto1.jpg',  '4000x3000', 'jpg', true,  false),
+(1,  'shoot1_foto2.jpg',  '4000x3000', 'jpg', false, false),
+(2,  'shoot2_foto1.jpg',  '6000x4000', 'jpg', true,  true),
+(2,  'shoot2_foto2.jpg',  '6000x4000', 'jpg', true,  true),
+(3,  'shoot3_foto1.jpg',  '4000x3000', 'png', true,  false),
+(4,  'shoot4_foto1.jpg',  '4000x3000', 'jpg', false, false),
+(5,  'shoot5_foto1.jpg',  '6000x4000', 'jpg', true,  true),
+(6,  'shoot6_foto1.jpg',  '4000x3000', 'jpg', true,  false),
+(7,  'shoot7_foto1.jpg',  '4000x3000', 'jpg', false, false),
+(8,  'shoot8_foto1.jpg',  '6000x4000', 'png', true,  true),
+(9,  'shoot9_foto1.jpg',  '4000x3000', 'jpg', true,  false),
+(10, 'shoot10_foto1.jpg', '4000x3000', 'jpg', true,  false);
+
+-- ============================================
+-- TABEL: Levering
+-- ============================================
+CREATE TABLE Levering (
+    LeveringID    INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    fotoshoot_id  INT,
+    leverdatum    DATE,
+    type          VARCHAR(50),
+    download_link VARCHAR(200),
+    aantal_prints INT,
+    CONSTRAINT fk_levering_fotoshoot FOREIGN KEY (fotoshoot_id) REFERENCES Fotoshoot(FotoshootID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO Levering (fotoshoot_id, leverdatum, type, download_link, aantal_prints) VALUES
+(1,  '2024-01-14', 'prints',   'https://example.com/dl1',   10),
+(2,  '2024-01-15', 'digitaal', 'https://example.com/dl2',    0),
+(3,  '2024-01-18', 'prints',   'https://example.com/dl3',   20),
+(4,  '2024-01-22', 'digitaal', 'https://example.com/dl4',    0),
+(5,  '2024-01-25', 'prints',   'https://example.com/dl5',   50),
+(6,  '2024-01-28', 'digitaal', 'https://example.com/dl6',    0),
+(7,  '2024-01-30', 'digitaal', 'https://example.com/dl7',    5),
+(8,  '2024-02-03', 'prints',   'https://example.com/dl8',   15),
+(9,  '2024-02-07', 'digitaal', 'https://example.com/dl9',    0),
+(10, '2024-02-12', 'prints',   'https://example.com/dl10',  25);

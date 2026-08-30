@@ -1,0 +1,7 @@
+<% if (feedback && feedback.success) { %>
+  <div class="alert alert-success mb-6"><%= feedback.success %></div>
+<% } %>
+
+<% if (feedback && feedback.error) { %>
+  <div class="alert alert-error mb-6"><%= feedback.error %></div>
+<% } %>

@@ -1,0 +1,127 @@
+<%- include('../partials/head', { title: title }) %>
+<div class="app-shell flex min-h-screen bg-soft">
+  <%- include('../partials/sidebar', { currentPath: currentPath }) %>
+
+  <div class="min-w-0 flex-1">
+    <header class="border-b border-line bg-white/80 px-6 py-5 backdrop-blur lg:px-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="eyebrow mb-2">Shootdetail</p>
+          <h1 class="text-2xl font-bold tracking-[-0.03em] text-ink"><%= pageTitle %></h1>
+          <p class="muted mt-2 text-sm"><%= pageSubtitle %></p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a href="/fotoshoots" class="btn btn-secondary">Terug</a>
+          <a href="/fotoshoots/<%= fotoshoot.fotoshootid %>/edit" class="btn btn-primary">Fotoshoot bewerken</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="space-y-6 px-6 py-6 lg:px-8">
+      <%- include('../partials/flash', { feedback: feedback }) %>
+
+      <section class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <article class="surface-card p-6">
+          <div class="mb-6 flex items-start justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-bold tracking-[-0.03em]">Basisinformatie</h2>
+              <p class="muted mt-1 text-sm">Datum, timing en status van de shoot.</p>
+            </div>
+            <span class="<%= badgeClass(fotoshoot.status) %>"><%= fotoshoot.status %></span>
+          </div>
+
+          <div class="info-grid">
+            <div class="info-item">
+              <p class="eyebrow mb-2">Datum</p>
+              <p class="font-semibold"><%= formatDate(fotoshoot.datum) %></p>
+            </div>
+            <div class="info-item">
+              <p class="eyebrow mb-2">Starttijd</p>
+              <p class="font-semibold"><%= formatTime(fotoshoot.starttijd) %></p>
+            </div>
+            <div class="info-item">
+              <p class="eyebrow mb-2">Eindtijd</p>
+              <p class="font-semibold"><%= formatTime(fotoshoot.eindtijd) %></p>
+            </div>
+            <div class="info-item">
+              <p class="eyebrow mb-2">Pakketprijs</p>
+              <p class="font-semibold"><%= formatCurrency(fotoshoot.pakket_prijs) %></p>
+            </div>
+          </div>
+
+          <div class="mt-6 grid gap-6 md:grid-cols-2">
+            <div class="surface-card p-5">
+              <p class="eyebrow mb-2">Klant</p>
+              <h3 class="text-lg font-bold"><%= fotoshoot.klant_naam || '—' %></h3>
+              <p class="muted mt-3 text-sm"><%= fotoshoot.klant_email || 'Geen e-mail' %></p>
+              <p class="muted mt-1 text-sm"><%= fotoshoot.klant_telefoon || 'Geen telefoon' %></p>
+            </div>
+
+            <div class="surface-card p-5">
+              <p class="eyebrow mb-2">Pakket</p>
+              <h3 class="text-lg font-bold"><%= fotoshoot.pakket_naam || '—' %></h3>
+              <p class="muted mt-3 text-sm"><%= fotoshoot.aantal_fotos_inbegrepen || 0 %> foto's inbegrepen</p>
+              <p class="muted mt-1 text-sm">Levertijd: <%= fotoshoot.levertijd_dagen || '—' %> dagen</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="space-y-6">
+          <div class="surface-card p-6">
+            <h2 class="text-xl font-bold tracking-[-0.03em]">Locatie</h2>
+            <p class="muted mt-1 text-sm"><%= fotoshoot.locatie_type || '—' %></p>
+            <div class="mt-5 space-y-4">
+              <div class="info-item">
+                <p class="eyebrow mb-2">Naam</p>
+                <p class="font-semibold"><%= fotoshoot.locatie_naam || '—' %></p>
+              </div>
+              <div class="info-item">
+                <p class="eyebrow mb-2">Adres</p>
+                <p class="font-semibold"><%= formatAddress(fotoshoot) %></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="surface-card p-6">
+            <h2 class="text-xl font-bold tracking-[-0.03em]">Opmerkingen</h2>
+            <p class="muted mt-4 leading-7"><%= fotoshoot.opmerkingen || 'Geen extra opmerkingen voor deze fotoshoot.' %></p>
+          </div>
+        </article>
+      </section>
+
+      <section class="surface-card p-0">
+        <div class="border-b border-line px-5 py-4">
+          <h2 class="text-xl font-bold tracking-[-0.03em]">Gekoppelde facturen</h2>
+        </div>
+
+        <% if (facturen.length === 0) { %>
+          <div class="empty-state">Er is nog geen factuur gekoppeld aan deze fotoshoot.</div>
+        <% } else { %>
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Factuur</th>
+                  <th>Datum</th>
+                  <th>Bedrag</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% facturen.forEach((factuur) => { %>
+                  <tr>
+                    <td class="font-semibold">#<%= factuur.factuurid %></td>
+                    <td><%= formatDate(factuur.datum) %></td>
+                    <td><%= formatCurrency(factuur.totaalbedrag) %></td>
+                    <td><span class="<%= badgeClass(factuur.status) %>"><%= factuur.status %></span></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </section>
+    </main>
+  </div>
+</div>
+<%- include('../partials/footer') %>

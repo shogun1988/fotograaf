@@ -1,0 +1,86 @@
+<%- include('../partials/head', { title: title }) %>
+<div class="app-shell flex min-h-screen bg-soft">
+  <%- include('../partials/sidebar', { currentPath: currentPath }) %>
+
+  <div class="min-w-0 flex-1">
+    <header class="border-b border-line bg-white/80 px-6 py-5 backdrop-blur lg:px-8">
+      <p class="eyebrow mb-2">Nieuwe fotoshoot</p>
+      <h1 class="text-2xl font-bold tracking-[-0.03em] text-ink"><%= pageTitle %></h1>
+      <p class="muted mt-2 text-sm"><%= pageSubtitle %></p>
+    </header>
+
+    <main class="px-6 py-6 lg:px-8">
+      <section class="surface-card p-6">
+        <form action="/fotoshoots" method="POST" class="space-y-8">
+          <div class="grid gap-4 md:grid-cols-2">
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold text-ink">Klant</span>
+              <select name="klant_id" required class="form-select">
+                <option value="">Selecteer een klant</option>
+                <% klanten.forEach((klant) => { %>
+                  <option value="<%= klant.klantid %>" <%= String(fotoshoot.klant_id) === String(klant.klantid) ? 'selected' : '' %>><%= klant.voornaam %> <%= klant.achternaam %></option>
+                <% }) %>
+              </select>
+            </label>
+
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold text-ink">Pakket</span>
+              <select name="pakket_id" required class="form-select">
+                <option value="">Selecteer een pakket</option>
+                <% pakketten.forEach((pakket) => { %>
+                  <option value="<%= pakket.pakketid %>" <%= String(fotoshoot.pakket_id) === String(pakket.pakketid) ? 'selected' : '' %>><%= pakket.naam %> - <%= formatCurrency(pakket.prijs) %></option>
+                <% }) %>
+              </select>
+            </label>
+
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold text-ink">Locatie</span>
+              <select name="locatie_id" required class="form-select">
+                <option value="">Selecteer een locatie</option>
+                <% locaties.forEach((locatie) => { %>
+                  <option value="<%= locatie.locatieid %>" <%= String(fotoshoot.locatie_id) === String(locatie.locatieid) ? 'selected' : '' %>><%= locatie.naam %> (<%= locatie.type %>)</option>
+                <% }) %>
+              </select>
+            </label>
+
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold text-ink">Status</span>
+              <select name="status" required class="form-select">
+                <option value="gepland" <%= fotoshoot.status === 'gepland' ? 'selected' : '' %>>Gepland</option>
+                <option value="afgewerkt" <%= fotoshoot.status === 'afgewerkt' ? 'selected' : '' %>>Afgewerkt</option>
+                <option value="geannuleerd" <%= fotoshoot.status === 'geannuleerd' ? 'selected' : '' %>>Geannuleerd</option>
+              </select>
+            </label>
+
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold text-ink">Datum</span>
+              <input type="date" name="datum" required class="form-control" value="<%= fotoshoot.datum %>" />
+            </label>
+
+            <div class="grid grid-cols-2 gap-4">
+              <label class="block">
+                <span class="mb-2 block text-sm font-semibold text-ink">Starttijd</span>
+                <input type="time" name="starttijd" required class="form-control" value="<%= fotoshoot.starttijd %>" />
+              </label>
+              <label class="block">
+                <span class="mb-2 block text-sm font-semibold text-ink">Eindtijd</span>
+                <input type="time" name="eindtijd" required class="form-control" value="<%= fotoshoot.eindtijd %>" />
+              </label>
+            </div>
+
+            <label class="block md:col-span-2">
+              <span class="mb-2 block text-sm font-semibold text-ink">Opmerkingen</span>
+              <textarea name="opmerkingen" class="form-textarea"><%= fotoshoot.opmerkingen %></textarea>
+            </label>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <button type="submit" class="btn btn-primary">Fotoshoot opslaan</button>
+            <a href="/fotoshoots" class="btn btn-secondary">Annuleren</a>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+</div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,47 @@
+<%
+  const isActive = (path) => {
+    if (path === '/') {
+      return currentPath === '/';
+    }
+
+    return currentPath.startsWith(path);
+  };
+%>
+<aside class="sidebar-shell w-64 shrink-0 border-r border-line bg-white/95 px-5 py-6 backdrop-blur lg:sticky lg:top-0 lg:h-screen">
+  <div class="mb-8 flex items-center gap-3 px-2">
+    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent-soft text-accent" aria-hidden="true">
+      <i data-lucide="aperture" class="h-5 w-5"></i>
+    </div>
+    <div>
+      <p class="eyebrow !mb-1">Studio app</p>
+      <p class="text-lg font-bold text-accent">Fotograaf</p>
+    </div>
+  </div>
+
+  <nav class="space-y-2">
+    <a href="/" class="sidebar-link <%= isActive('/') ? 'active' : '' %>">
+      <i data-lucide="home" class="h-4 w-4"></i>
+      <span>Dashboard</span>
+    </a>
+    <a href="/klanten" class="sidebar-link <%= isActive('/klanten') ? 'active' : '' %>">
+      <i data-lucide="users" class="h-4 w-4"></i>
+      <span>Klanten</span>
+    </a>
+    <a href="/fotoshoots" class="sidebar-link <%= isActive('/fotoshoots') ? 'active' : '' %>">
+      <i data-lucide="camera" class="h-4 w-4"></i>
+      <span>Fotoshoots</span>
+    </a>
+    <a href="/facturen" class="sidebar-link <%= isActive('/facturen') ? 'active' : '' %>">
+      <i data-lucide="file-text" class="h-4 w-4"></i>
+      <span>Facturen</span>
+    </a>
+    <a href="/pakketten" class="sidebar-link <%= isActive('/pakketten') ? 'active' : '' %>">
+      <i data-lucide="package" class="h-4 w-4"></i>
+      <span>Pakketten</span>
+    </a>
+    <a href="/locaties" class="sidebar-link <%= isActive('/locaties') ? 'active' : '' %>">
+      <i data-lucide="map-pin" class="h-4 w-4"></i>
+      <span>Locaties</span>
+    </a>
+  </nav>
+</aside>

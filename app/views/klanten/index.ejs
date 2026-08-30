@@ -1,0 +1,70 @@
+<%- include('../partials/head', { title: title }) %>
+<div class="app-shell flex min-h-screen bg-soft">
+  <%- include('../partials/sidebar', { currentPath: currentPath }) %>
+
+  <div class="min-w-0 flex-1">
+    <header class="border-b border-line bg-white/80 px-6 py-5 backdrop-blur lg:px-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="eyebrow mb-2">Klantenbeheer</p>
+          <h1 class="text-2xl font-bold tracking-[-0.03em] text-ink"><%= pageTitle %></h1>
+          <p class="muted mt-2 text-sm"><%= pageSubtitle %></p>
+        </div>
+        <a href="/klanten/new" class="btn btn-primary">
+          <i data-lucide="plus" class="h-4 w-4"></i>
+          Nieuwe klant
+        </a>
+      </div>
+    </header>
+
+    <main class="px-6 py-6 lg:px-8">
+      <%- include('../partials/flash', { feedback: feedback }) %>
+
+      <section class="surface-card p-0">
+        <% if (klanten.length === 0) { %>
+          <div class="empty-state">
+            <p class="mb-4 text-lg font-semibold text-ink">Nog geen klanten beschikbaar</p>
+            <a href="/klanten/new" class="btn btn-primary">Eerste klant toevoegen</a>
+          </div>
+        <% } else { %>
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Naam</th>
+                  <th>E-mail</th>
+                  <th>Telefoon</th>
+                  <th>Type klant</th>
+                  <th>Adres</th>
+                  <th>Acties</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% klanten.forEach((klant) => { %>
+                  <tr>
+                    <td class="font-semibold"><%= klant.voornaam %> <%= klant.achternaam %></td>
+                    <td><%= klant.email %></td>
+                    <td><%= klant.telefoon || '—' %></td>
+                    <td><span class="badge status-default"><%= klant.type_klant || '—' %></span></td>
+                    <td class="max-w-xs"><%= formatAddress(klant) %></td>
+                    <td>
+                      <div class="flex flex-wrap gap-2">
+                        <a href="/klanten/<%= klant.klantid %>" class="btn btn-secondary">Bekijk</a>
+                        <a href="/klanten/<%= klant.klantid %>/edit" class="btn btn-secondary">Bewerk</a>
+                        <form action="/klanten/<%= klant.klantid %>" method="POST" onsubmit="return confirm('Weet je zeker dat je deze klant wilt verwijderen?');">
+                          <input type="hidden" name="_method" value="DELETE" />
+                          <button type="submit" class="btn btn-danger">Verwijder</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </section>
+    </main>
+  </div>
+</div>
+<%- include('../partials/footer') %>

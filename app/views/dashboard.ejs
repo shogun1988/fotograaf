@@ -1,0 +1,207 @@
+<%- include('partials/head', { title: title }) %>
+<div class="app-shell flex min-h-screen bg-soft">
+  <%- include('partials/sidebar', { currentPath: currentPath }) %>
+
+  <div class="min-w-0 flex-1">
+    <header class="border-b border-line bg-white/80 px-6 py-5 backdrop-blur lg:px-8">
+      <p class="eyebrow mb-2">Studio overzicht</p>
+      <h1 class="text-2xl font-bold tracking-[-0.03em] text-ink"><%= pageTitle %></h1>
+      <p class="muted mt-2 text-sm"><%= pageSubtitle %></p>
+    </header>
+
+    <main class="px-6 py-6 lg:px-8">
+      <%- include('partials/flash', { feedback: feedback }) %>
+
+      <section class="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <article class="surface-card p-5">
+          <div class="mb-4 flex items-start justify-between gap-4">
+            <div>
+              <p class="muted text-sm font-medium">Totaal klanten</p>
+              <p class="metric-value mt-3"><%= metrics.totaalKlanten %></p>
+            </div>
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+              <i data-lucide="users" class="h-5 w-5"></i>
+            </div>
+          </div>
+          <p class="text-sm font-semibold text-accent">Actieve klanten in je database</p>
+        </article>
+
+        <article class="surface-card p-5">
+          <div class="mb-4 flex items-start justify-between gap-4">
+            <div>
+              <p class="muted text-sm font-medium">Geplande shoots</p>
+              <p class="metric-value mt-3"><%= metrics.geplandeShoots %></p>
+            </div>
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+              <i data-lucide="calendar-days" class="h-5 w-5"></i>
+            </div>
+          </div>
+          <p class="text-sm font-semibold text-accent">Shoots die nog op de planning staan</p>
+        </article>
+
+        <article class="surface-card p-5">
+          <div class="mb-4 flex items-start justify-between gap-4">
+            <div>
+              <p class="muted text-sm font-medium">Open facturen</p>
+              <p class="metric-value mt-3"><%= metrics.openFacturenAantal %></p>
+            </div>
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+              <i data-lucide="wallet-cards" class="h-5 w-5"></i>
+            </div>
+          </div>
+          <p class="text-sm font-semibold text-accent"><%= formatCurrency(metrics.openFacturenBedrag) %> openstaand</p>
+        </article>
+
+        <article class="surface-card p-5">
+          <div class="mb-4 flex items-start justify-between gap-4">
+            <div>
+              <p class="muted text-sm font-medium">Afgewerkte shoots</p>
+              <p class="metric-value mt-3"><%= metrics.afgewerkteShoots %></p>
+            </div>
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-sage text-sage-ink">
+              <i data-lucide="check-circle-2" class="h-5 w-5"></i>
+            </div>
+          </div>
+          <p class="text-sm font-semibold text-sage-ink">Succesvol afgewerkte opdrachten</p>
+        </article>
+      </section>
+
+      <div class="grid gap-6 xl:grid-cols-2">
+
+        <%# ───── WEER WIDGET ───── %>
+        <section class="surface-card xl:col-span-2">
+          <div class="border-b border-line px-5 py-4 flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-bold tracking-[-0.03em]">Weersvoorspelling — 7 dagen</h2>
+              <p class="muted mt-1 text-sm">
+                <i data-lucide="map-pin" class="inline h-3.5 w-3.5 mr-1"></i><%= weer.stad %>, België
+              </p>
+            </div>
+            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e8f4fd] text-[#3b82f6]">
+              <i data-lucide="cloud-sun" class="h-5 w-5"></i>
+            </div>
+          </div>
+
+          <% if (weer.fout) { %>
+            <div class="px-5 py-6 text-sm text-muted flex items-center gap-2">
+              <i data-lucide="wifi-off" class="h-4 w-4 shrink-0"></i>
+              <span><%= weer.fout %></span>
+            </div>
+          <% } else { %>
+            <div class="grid grid-cols-2 divide-x divide-y divide-line sm:grid-cols-4 lg:grid-cols-7">
+              <% weer.dagen.forEach((dag, i) => { %>
+                <div class="flex flex-col items-center gap-2 px-3 py-5 text-center <%= i === 0 ? 'bg-accent-soft/40' : 'hover:bg-soft' %> transition-colors">
+                  <p class="text-xs font-bold uppercase tracking-widest <%= i === 0 ? 'text-accent' : 'text-muted' %>">
+                    <%= dag.dagLabel %>
+                  </p>
+                  <p class="text-[10px] text-muted"><%= dag.datumLabel %></p>
+
+                  <span class="text-3xl leading-none my-1" title="<%= dag.label %>"><%= dag.emoji %></span>
+
+                  <p class="text-[11px] font-medium text-muted leading-tight line-clamp-2 min-h-[2.5rem]"><%= dag.label %></p>
+
+                  <div class="flex items-center gap-1.5 font-bold">
+                    <span class="text-sm text-ink"><%= dag.maxTemp %>°</span>
+                    <span class="text-xs text-muted font-normal"><%= dag.minTemp %>°</span>
+                  </div>
+
+                  <div class="flex items-center gap-1 text-[11px] text-[#3b82f6]" title="Neerslagkans">
+                    <i data-lucide="droplets" class="h-3 w-3 shrink-0"></i>
+                    <span class="font-semibold"><%= dag.neerslag %>%</span>
+                  </div>
+
+                  <div class="flex items-center gap-1 text-[11px] text-muted" title="Windsnelheid">
+                    <i data-lucide="wind" class="h-3 w-3 shrink-0"></i>
+                    <span><%= dag.windsnelheid %> km/u</span>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+
+            <div class="border-t border-line px-5 py-3 flex items-center gap-2 text-[11px] text-muted">
+              <i data-lucide="info" class="h-3.5 w-3.5 shrink-0"></i>
+              Weersdata via <a href="https://open-meteo.com" target="_blank" class="underline hover:text-accent">Open-Meteo</a> — bijgewerkt bij elke paginalading.
+            </div>
+          <% } %>
+        </section>
+
+        <section class="surface-card p-0">
+          <div class="border-b border-line px-5 py-4">
+            <h2 class="text-xl font-bold tracking-[-0.03em]">Recente fotoshoots</h2>
+            <p class="muted mt-1 text-sm">De vijf meest recente shoots in je planning.</p>
+          </div>
+
+          <% if (recenteShoots.length === 0) { %>
+            <div class="empty-state">Nog geen fotoshoots gevonden.</div>
+          <% } else { %>
+            <div class="table-shell">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Datum</th>
+                    <th>Klant</th>
+                    <th>Pakket</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% recenteShoots.forEach((shoot) => { %>
+                    <tr>
+                      <td>
+                        <div class="font-semibold"><%= formatDate(shoot.datum) %></div>
+                        <div class="muted text-sm"><%= formatTime(shoot.starttijd) %> - <%= formatTime(shoot.eindtijd) %></div>
+                      </td>
+                      <td>
+                        <div class="font-semibold"><%= shoot.klant_naam %></div>
+                        <div class="muted text-sm"><%= shoot.locatie_naam || '—' %></div>
+                      </td>
+                      <td><%= shoot.pakket_naam || '—' %></td>
+                      <td><span class="<%= badgeClass(shoot.status) %>"><%= shoot.status %></span></td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+        </section>
+
+        <section class="surface-card p-0">
+          <div class="border-b border-line px-5 py-4">
+            <h2 class="text-xl font-bold tracking-[-0.03em]">Recente facturen</h2>
+            <p class="muted mt-1 text-sm">De laatste vijf facturen met actuele status.</p>
+          </div>
+
+          <% if (recenteFacturen.length === 0) { %>
+            <div class="empty-state">Nog geen facturen gevonden.</div>
+          <% } else { %>
+            <div class="table-shell">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Factuur</th>
+                    <th>Klant</th>
+                    <th>Datum</th>
+                    <th>Bedrag</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% recenteFacturen.forEach((factuur) => { %>
+                    <tr>
+                      <td class="font-semibold">#<%= factuur.factuurid %></td>
+                      <td><%= factuur.klant_naam || '—' %></td>
+                      <td><%= formatDate(factuur.datum) %></td>
+                      <td><%= formatCurrency(factuur.totaalbedrag) %></td>
+                      <td><span class="<%= badgeClass(factuur.status) %>"><%= factuur.status %></span></td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+<%- include('partials/footer') %>

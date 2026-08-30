@@ -1,0 +1,19 @@
+<%- include('partials/head', { title: title }) %>
+<div class="app-shell flex min-h-screen bg-soft">
+  <%- include('partials/sidebar', { currentPath: currentPath }) %>
+
+  <div class="min-w-0 flex-1">
+    <header class="border-b border-line bg-white/80 px-6 py-5 backdrop-blur lg:px-8">
+      <p class="eyebrow mb-2">Fotograaf management</p>
+      <h1 class="text-2xl font-bold tracking-[-0.03em] text-ink"><%= pageTitle || title || 'Fotograaf' %></h1>
+      <% if (pageSubtitle) { %>
+        <p class="muted mt-2 text-sm"><%= pageSubtitle %></p>
+      <% } %>
+    </header>
+
+    <main class="px-6 py-6 lg:px-8">
+      <%- body || '' %>
+    </main>
+  </div>
+</div>
+<%- include('partials/footer') %>

@@ -1,0 +1,86 @@
+<%- include('../partials/head', { title: title }) %>
+<div class="app-shell flex min-h-screen bg-soft">
+  <%- include('../partials/sidebar', { currentPath: currentPath }) %>
+  <div class="min-w-0 flex-1">
+    <header class="border-b border-line bg-white/80 px-6 py-5 backdrop-blur lg:px-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="eyebrow mb-2">Factuurdetail</p>
+          <h1 class="text-2xl font-bold tracking-[-0.03em] text-ink"><%= pageTitle %></h1>
+          <p class="muted mt-2 text-sm"><%= pageSubtitle %></p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <a href="/facturen/<%= factuur.factuurid %>/edit" class="btn btn-secondary">
+            <i data-lucide="pencil" class="h-4 w-4"></i> Bewerk
+          </a>
+          <form action="/facturen/<%= factuur.factuurid %>" method="POST" onsubmit="return confirm('Factuur verwijderen?');">
+            <input type="hidden" name="_method" value="DELETE" />
+            <button type="submit" class="btn btn-danger">
+              <i data-lucide="trash-2" class="h-4 w-4"></i> Verwijder
+            </button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <main class="space-y-6 px-6 py-6 lg:px-8">
+      <%- include('../partials/flash', { feedback: feedback }) %>
+
+      <div class="grid gap-6 md:grid-cols-2">
+        <section class="surface-card p-6">
+          <h2 class="mb-5 text-lg font-bold tracking-[-0.02em]">Factuurgegevens</h2>
+          <dl class="space-y-4">
+            <div class="info-item">
+              <dt class="eyebrow mb-1">Klant</dt>
+              <dd class="font-semibold"><%= factuur.klant_naam || '—' %></dd>
+            </div>
+            <div class="info-item">
+              <dt class="eyebrow mb-1">Datum</dt>
+              <dd class="font-semibold"><%= formatDate(factuur.datum) %></dd>
+            </div>
+            <div class="info-item">
+              <dt class="eyebrow mb-1">Totaalbedrag</dt>
+              <dd class="text-2xl font-bold text-accent"><%= formatCurrency(factuur.totaalbedrag) %></dd>
+            </div>
+            <div class="info-item">
+              <dt class="eyebrow mb-1">Status</dt>
+              <dd><span class="<%= badgeClass(factuur.status) %>"><%= factuur.status %></span></dd>
+            </div>
+            <% if (factuur.fotoshoot_id) { %>
+            <div class="info-item">
+              <dt class="eyebrow mb-1">Gekoppelde shoot</dt>
+              <dd><a href="/fotoshoots/<%= factuur.fotoshoot_id %>" class="font-semibold text-accent hover:underline">Shoot #<%= factuur.fotoshoot_id %></a></dd>
+            </div>
+            <% } %>
+          </dl>
+        </section>
+
+        <section class="surface-card p-6">
+          <h2 class="mb-5 text-lg font-bold tracking-[-0.02em]">Betalingen</h2>
+          <% if (betalingen.length === 0) { %>
+            <p class="muted text-sm">Nog geen betalingen geregistreerd.</p>
+          <% } else { %>
+            <div class="space-y-3">
+              <% betalingen.forEach(b => { %>
+                <div class="flex items-center justify-between rounded-xl border border-line bg-soft px-4 py-3">
+                  <div>
+                    <p class="font-semibold text-ink"><%= formatCurrency(b.bedrag) %></p>
+                    <p class="muted text-xs"><%= formatDate(b.datum) %> · <%= b.methode || '—' %></p>
+                  </div>
+                  <span class="badge status-betaald">betaald</span>
+                </div>
+              <% }) %>
+            </div>
+          <% } %>
+        </section>
+      </div>
+
+      <div class="flex gap-3">
+        <a href="/facturen" class="btn btn-secondary">
+          <i data-lucide="arrow-left" class="h-4 w-4"></i> Terug naar facturen
+        </a>
+      </div>
+    </main>
+  </div>
+</div>
+<%- include('../partials/footer') %>

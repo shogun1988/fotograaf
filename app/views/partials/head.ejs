@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title ? `${title} | Fotograaf` : 'Fotograaf' %></title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: '#20201e',
+              muted: '#777773',
+              line: '#e8e7e3',
+              soft: '#f6f5f2',
+              accent: '#c86745',
+              'accent-dark': '#a64d31',
+              'accent-soft': '#f8e7df',
+              sage: '#e7f0e8',
+              'sage-ink': '#38704b'
+            },
+            fontFamily: {
+              sans: ['DM Sans', 'sans-serif']
+            }
+          }
+        }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body class="bg-soft font-sans text-ink">
