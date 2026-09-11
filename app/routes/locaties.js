@@ -1,5 +1,5 @@
 ﻿const express = require('express');
-const { sqlite } = require('../db/db');
+const { sqlite, likePattern } = require('../db/db');
 const router = express.Router();
 
 const emptyToNull = v => (v === undefined || v === null || String(v).trim() === '') ? null : String(v).trim();
@@ -14,12 +14,20 @@ function getLocatieById(id) {
 
 router.get('/', (req, res, next) => {
   try {
+    const search = String(req.query.q || '').trim();
+    const searchClause = search ? `
+      WHERE (
+        COALESCE(l.naam, '') || ' ' || COALESCE(l.type, '') || ' ' ||
+        COALESCE(a.straat, '') || ' ' || COALESCE(a.postcode, '') || ' ' ||
+        COALESCE(a.stad, '') || ' ' || COALESCE(a.land, '')
+      ) LIKE ? COLLATE NOCASE ESCAPE '\\'` : '';
     const locaties = sqlite.prepare(`
       SELECT l.locatieid, l.naam, l.type, a.straat, a.huisnummer, a.busnummer, a.postcode, a.stad, a.land
       FROM locatie l LEFT JOIN address a ON a.addressid = l.adres_id
-      ORDER BY l.naam`).all();
+      ${searchClause}
+      ORDER BY l.naam`).all(...(search ? [likePattern(search)] : []));
     res.render('locaties/index', { title:'Locaties', pageTitle:'Locaties',
-      pageSubtitle:'Alle shootlocaties met type en adres in één overzicht.', locaties });
+      pageSubtitle:'Alle shootlocaties met type en adres in één overzicht.', locaties, search });
   } catch(e) { next(e); }
 });
 

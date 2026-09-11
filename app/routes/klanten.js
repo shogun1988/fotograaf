@@ -1,5 +1,5 @@
 ﻿const express = require('express');
-const { sqlite } = require('../db/db');
+const { sqlite, likePattern } = require('../db/db');
 const router = express.Router();
 
 const emptyToNull = v => (v === undefined || v === null || String(v).trim() === '') ? null : String(v).trim();
@@ -14,13 +14,22 @@ function getKlantById(id) {
 
 router.get('/', (req, res, next) => {
   try {
+    const search = String(req.query.q || '').trim();
+    const searchClause = search ? `
+      WHERE (
+        k.voornaam || ' ' || k.achternaam || ' ' || COALESCE(k.email, '') || ' ' ||
+        COALESCE(k.telefoon, '') || ' ' || COALESCE(k.type_klant, '') || ' ' ||
+        COALESCE(a.straat, '') || ' ' || COALESCE(a.postcode, '') || ' ' ||
+        COALESCE(a.stad, '')
+      ) LIKE ? COLLATE NOCASE ESCAPE '\\'` : '';
     const klanten = sqlite.prepare(`
       SELECT k.klantid, k.voornaam, k.achternaam, k.email, k.telefoon, k.type_klant,
              a.straat, a.huisnummer, a.busnummer, a.postcode, a.stad, a.land
       FROM klant k LEFT JOIN address a ON a.addressid = k.adres_id
-      ORDER BY k.voornaam, k.achternaam`).all();
+      ${searchClause}
+      ORDER BY k.voornaam, k.achternaam`).all(...(search ? [likePattern(search)] : []));
     res.render('klanten/index', { title:'Klanten', pageTitle:'Klanten',
-      pageSubtitle:'Beheer je klantenbestand en hun contactgegevens.', klanten });
+      pageSubtitle:'Beheer je klantenbestand en hun contactgegevens.', klanten, search });
   } catch(e) { next(e); }
 });
 

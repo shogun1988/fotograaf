@@ -10,47 +10,65 @@
           <h1 class="text-2xl font-bold tracking-[-0.03em] text-ink"><%= pageTitle %></h1>
           <p class="muted mt-2 text-sm"><%= pageSubtitle %></p>
         </div>
-        <a href="/locaties/new" class="btn btn-primary">
-          <i data-lucide="plus" class="h-4 w-4"></i>
-          Nieuwe locatie
-        </a>
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <form action="/locaties" method="GET" class="flex items-center gap-2" data-realtime-search="locaties">
+            <label for="locaties-search" class="sr-only">Locaties zoeken</label>
+            <input id="locaties-search" name="q" value="<%= search %>" type="search"
+              placeholder="Zoek locatie of stad..." class="form-control min-w-0 sm:w-64" />
+            <button type="submit" class="btn btn-secondary">Zoeken</button>
+          </form>
+          <a href="/locaties/new" class="btn btn-primary">
+            <i data-lucide="plus" class="h-4 w-4"></i>
+            Nieuwe locatie
+          </a>
+        </div>
       </div>
     </header>
 
     <main class="px-6 py-6 lg:px-8">
-      <section class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        <% locaties.forEach((locatie) => { %>
-          <article class="surface-card p-6">
-            <div class="mb-5 flex items-start justify-between gap-4">
-              <div>
-                <p class="eyebrow mb-2">Locatie</p>
-                <h2 class="text-xl font-bold tracking-[-0.03em]"><%= locatie.naam %></h2>
-              </div>
-              <span class="badge status-default"><%= locatie.type || '—' %></span>
-            </div>
-
-            <div class="space-y-3">
-              <div class="info-item">
-                <p class="eyebrow mb-2">Adres</p>
-                <p class="font-semibold"><%= formatAddress(locatie) %></p>
-              </div>
-              <div class="info-item">
-                <p class="eyebrow mb-2">Type locatie</p>
-                <p class="font-semibold"><%= locatie.type || '—' %></p>
-              </div>
-            </div>
-
-            <div class="mt-6 flex flex-wrap gap-2 border-t border-line pt-5">
-              <a href="/locaties/<%= locatie.locatieid %>" class="btn btn-secondary">Bekijk</a>
-              <a href="/locaties/<%= locatie.locatieid %>/edit" class="btn btn-secondary">Bewerk</a>
-              <form action="/locaties/<%= locatie.locatieid %>" method="POST" onsubmit="return confirm('Weet je zeker dat je deze locatie wilt verwijderen?');">
-                <input type="hidden" name="_method" value="DELETE" />
-                <button type="submit" class="btn btn-danger">Verwijder</button>
-              </form>
-            </div>
-          </article>
-        <% }) %>
-      </section>
+      <% if (locaties.length === 0) { %>
+        <section class="surface-card empty-state">
+          <%= search ? 'Geen locaties gevonden voor deze zoekopdracht.' : 'Nog geen locaties beschikbaar.' %>
+        </section>
+      <% } else { %>
+        <section class="surface-card p-0" data-search-results="locaties">
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+               <tr>
+                 <th>Locatie</th>
+                 <th>Type</th>
+                 <th>Adres</th>
+                 <th>Stad</th>
+                 <th>Land</th>
+                 <th>Acties</th>
+               </tr>
+              </thead>
+              <tbody>
+               <% locaties.forEach((locatie) => { %>
+                 <tr data-search-item="locaties">
+                   <td class="font-semibold"><%= locatie.naam %></td>
+                   <td><span class="badge status-default"><%= locatie.type || '—' %></span></td>
+                   <td><%= [locatie.straat, locatie.huisnummer, locatie.busnummer].filter(Boolean).join(' ') || '—' %></td>
+                   <td><%= [locatie.postcode, locatie.stad].filter(Boolean).join(' ') || '—' %></td>
+                   <td><%= locatie.land || '—' %></td>
+                   <td>
+                     <div class="flex flex-wrap gap-2">
+                       <a href="/locaties/<%= locatie.locatieid %>" class="btn action-btn action-view">Bekijk</a>
+                       <a href="/locaties/<%= locatie.locatieid %>/edit" class="btn action-btn action-edit">Bewerk</a>
+                       <form action="/locaties/<%= locatie.locatieid %>" method="POST" onsubmit="return confirm('Weet je zeker dat je deze locatie wilt verwijderen?');">
+                         <input type="hidden" name="_method" value="DELETE" />
+                         <button type="submit" class="btn action-btn action-delete">Verwijder</button>
+                       </form>
+                     </div>
+                   </td>
+                 </tr>
+               <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      <% } %>
     </main>
   </div>
 </div>

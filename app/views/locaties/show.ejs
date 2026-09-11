@@ -10,12 +10,12 @@
           <p class="muted mt-2 text-sm"><%= pageSubtitle %></p>
         </div>
         <div class="flex flex-wrap gap-3">
-          <a href="/locaties/<%= locatie.locatieid %>/edit" class="btn btn-secondary">
+          <a href="/locaties/<%= locatie.locatieid %>/edit" class="btn action-btn action-edit">
             <i data-lucide="pencil" class="h-4 w-4"></i> Bewerk
           </a>
           <form action="/locaties/<%= locatie.locatieid %>" method="POST" onsubmit="return confirm('Locatie verwijderen?');">
             <input type="hidden" name="_method" value="DELETE" />
-            <button type="submit" class="btn btn-danger">
+            <button type="submit" class="btn action-btn action-delete">
               <i data-lucide="trash-2" class="h-4 w-4"></i> Verwijder
             </button>
           </form>
@@ -25,6 +25,16 @@
 
     <main class="space-y-6 px-6 py-6 lg:px-8">
       <%- include('../partials/flash', { feedback: feedback }) %>
+
+      <%
+        const mapAddress = [
+          locatie.straat && `${locatie.straat} ${locatie.huisnummer || ''}`.trim(),
+          locatie.busnummer && `bus ${locatie.busnummer}`,
+          locatie.postcode,
+          locatie.stad,
+          locatie.land
+        ].filter(Boolean).join(', ');
+      %>
 
       <div class="grid gap-6 md:grid-cols-2">
         <section class="surface-card p-6">
@@ -64,6 +74,37 @@
           <% } %>
         </section>
       </div>
+
+      <section class="surface-card location-map-card overflow-hidden">
+        <div class="flex flex-col gap-4 border-b border-line px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 class="text-lg font-bold tracking-[-0.02em]">Waar moet je zijn?</h2>
+            <p class="muted mt-1 text-sm"><%= formatAddress(locatie) %></p>
+          </div>
+          <% if (mapAddress) { %>
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=<%= encodeURIComponent(mapAddress) %>"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn action-btn action-view">
+              <i data-lucide="navigation" class="h-4 w-4"></i>
+              Open route
+            </a>
+          <% } %>
+        </div>
+        <% if (mapAddress) { %>
+          <iframe
+            class="location-map"
+            title="Kaart van <%= locatie.naam %>"
+            src="https://www.google.com/maps?q=<%= encodeURIComponent(mapAddress) %>&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen>
+          </iframe>
+        <% } else { %>
+          <div class="empty-state">Geen adres beschikbaar om op de kaart te tonen.</div>
+        <% } %>
+      </section>
 
       <div class="flex gap-3">
         <a href="/locaties" class="btn btn-secondary">

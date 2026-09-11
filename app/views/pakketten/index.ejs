@@ -10,49 +10,65 @@
           <h1 class="text-2xl font-bold tracking-[-0.03em] text-ink"><%= pageTitle %></h1>
           <p class="muted mt-2 text-sm"><%= pageSubtitle %></p>
         </div>
-        <a href="/pakketten/new" class="btn btn-primary">
-          <i data-lucide="plus" class="h-4 w-4"></i>
-          Nieuw pakket
-        </a>
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <form action="/pakketten" method="GET" class="flex items-center gap-2" data-realtime-search="pakketten">
+            <label for="pakketten-search" class="sr-only">Pakketten zoeken</label>
+            <input id="pakketten-search" name="q" value="<%= search %>" type="search"
+              placeholder="Zoek pakket..." class="form-control min-w-0 sm:w-64" />
+            <button type="submit" class="btn btn-secondary">Zoeken</button>
+          </form>
+          <a href="/pakketten/new" class="btn btn-primary">
+            <i data-lucide="plus" class="h-4 w-4"></i>
+            Nieuw pakket
+          </a>
+        </div>
       </div>
     </header>
 
     <main class="px-6 py-6 lg:px-8">
-      <section class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        <% pakketten.forEach((pakket) => { %>
-          <article class="surface-card p-6">
-            <div class="mb-5 flex items-start justify-between gap-4">
-              <div>
-                <p class="eyebrow mb-2">Pakket</p>
-                <h2 class="text-xl font-bold tracking-[-0.03em]"><%= pakket.naam %></h2>
-              </div>
-              <span class="rounded-full bg-accent-soft px-3 py-1 text-sm font-bold text-accent"><%= formatCurrency(pakket.prijs) %></span>
-            </div>
-
-            <p class="muted leading-7"><%= pakket.beschrijving || 'Geen beschrijving beschikbaar.' %></p>
-
-            <div class="mt-6 grid gap-3">
-              <div class="info-item">
-                <p class="eyebrow mb-2">Foto's inbegrepen</p>
-                <p class="font-semibold"><%= pakket.aantal_fotos_inbegrepen || 0 %> foto's</p>
-              </div>
-              <div class="info-item">
-                <p class="eyebrow mb-2">Levertijd</p>
-                <p class="font-semibold"><%= pakket.levertijd_dagen || '—' %> dagen</p>
-              </div>
-            </div>
-
-            <div class="mt-6 flex flex-wrap gap-2 border-t border-line pt-5">
-              <a href="/pakketten/<%= pakket.pakketid %>" class="btn btn-secondary">Bekijk</a>
-              <a href="/pakketten/<%= pakket.pakketid %>/edit" class="btn btn-secondary">Bewerk</a>
-              <form action="/pakketten/<%= pakket.pakketid %>" method="POST" onsubmit="return confirm('Weet je zeker dat je dit pakket wilt verwijderen?');">
-                <input type="hidden" name="_method" value="DELETE" />
-                <button type="submit" class="btn btn-danger">Verwijder</button>
-              </form>
-            </div>
-          </article>
-        <% }) %>
-      </section>
+      <% if (pakketten.length === 0) { %>
+        <section class="surface-card empty-state">
+          <%= search ? 'Geen pakketten gevonden voor deze zoekopdracht.' : 'Nog geen pakketten beschikbaar.' %>
+        </section>
+      <% } else { %>
+        <section class="surface-card p-0" data-search-results="pakketten">
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+               <tr>
+                 <th>Pakket</th>
+                 <th>Beschrijving</th>
+                 <th>Prijs</th>
+                 <th>Foto's</th>
+                 <th>Levertijd</th>
+                 <th>Acties</th>
+               </tr>
+              </thead>
+              <tbody>
+               <% pakketten.forEach((pakket) => { %>
+                 <tr data-search-item="pakketten">
+                   <td class="font-semibold"><%= pakket.naam %></td>
+                   <td class="max-w-sm"><%= pakket.beschrijving || '—' %></td>
+                   <td><span class="badge status-open"><%= formatCurrency(pakket.prijs) %></span></td>
+                   <td><%= pakket.aantal_fotos_inbegrepen || 0 %></td>
+                   <td><%= pakket.levertijd_dagen || '—' %> dagen</td>
+                   <td>
+                     <div class="flex flex-wrap gap-2">
+                       <a href="/pakketten/<%= pakket.pakketid %>" class="btn action-btn action-view">Bekijk</a>
+                       <a href="/pakketten/<%= pakket.pakketid %>/edit" class="btn action-btn action-edit">Bewerk</a>
+                       <form action="/pakketten/<%= pakket.pakketid %>" method="POST" onsubmit="return confirm('Weet je zeker dat je dit pakket wilt verwijderen?');">
+                         <input type="hidden" name="_method" value="DELETE" />
+                         <button type="submit" class="btn action-btn action-delete">Verwijder</button>
+                       </form>
+                     </div>
+                   </td>
+                 </tr>
+               <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      <% } %>
     </main>
   </div>
 </div>

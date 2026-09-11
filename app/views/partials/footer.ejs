@@ -2,6 +2,35 @@
       if (window.lucide) {
         window.lucide.createIcons();
       }
+
+      document.querySelectorAll('[data-realtime-search]').forEach((form) => {
+        const input = form.querySelector('input[type="search"]');
+        const results = document.querySelector(`[data-search-results="${form.dataset.realtimeSearch}"]`);
+        const items = results ? results.querySelectorAll('[data-search-item]') : [];
+        if (!input || items.length === 0) return;
+
+        const emptyMessage = document.createElement('p');
+        emptyMessage.className = 'empty-state m-6';
+        emptyMessage.textContent = 'Geen resultaten gevonden voor deze zoekopdracht.';
+        emptyMessage.hidden = true;
+        results.appendChild(emptyMessage);
+
+        const filterItems = () => {
+          const search = input.value.trim().toLocaleLowerCase();
+          let visibleItems = 0;
+
+          items.forEach((item) => {
+            const matches = !search || item.textContent.toLocaleLowerCase().includes(search);
+            item.hidden = !matches;
+            if (matches) visibleItems += 1;
+          });
+
+          emptyMessage.hidden = visibleItems > 0;
+        };
+
+        input.addEventListener('input', filterItems);
+        filterItems();
+      });
     </script>
   </body>
 </html>

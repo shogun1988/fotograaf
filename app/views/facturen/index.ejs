@@ -36,9 +36,16 @@
         </article>
       </section>
 
-      <section class="surface-card p-0">
+      <form action="/facturen" method="GET" class="surface-card flex flex-col gap-3 p-4 sm:flex-row sm:items-center" data-realtime-search="facturen">
+        <label for="facturen-search" class="text-sm font-semibold text-ink">Zoeken</label>
+        <input id="facturen-search" name="q" value="<%= search %>" type="search"
+          placeholder="Factuurnummer, klant of status..." class="form-control min-w-0 sm:max-w-md" />
+        <button type="submit" class="btn btn-secondary">Zoeken</button>
+      </form>
+
+      <section class="surface-card p-0" data-search-results="facturen">
         <% if (facturen.length === 0) { %>
-          <div class="empty-state">Nog geen facturen in het systeem.</div>
+          <div class="empty-state"><%= search ? 'Geen facturen gevonden voor deze zoekopdracht.' : 'Nog geen facturen in het systeem.' %></div>
         <% } else { %>
           <div class="table-shell">
             <table class="data-table">
@@ -55,7 +62,7 @@
               </thead>
               <tbody>
                 <% facturen.forEach((factuur) => { %>
-                  <tr>
+                  <tr data-search-item="facturen">
                     <td class="font-semibold">#<%= factuur.factuurid %></td>
                     <td><%= factuur.klant_naam || '—' %></td>
                     <td><%= formatDate(factuur.datum) %></td>
@@ -70,11 +77,11 @@
                     </td>
                     <td>
                       <div class="flex flex-wrap gap-2">
-                        <a href="/facturen/<%= factuur.factuurid %>" class="btn btn-secondary">Bekijk</a>
-                        <a href="/facturen/<%= factuur.factuurid %>/edit" class="btn btn-secondary">Bewerk</a>
+                        <a href="/facturen/<%= factuur.factuurid %>" class="btn action-btn action-view">Bekijk</a>
+                        <a href="/facturen/<%= factuur.factuurid %>/edit" class="btn action-btn action-edit">Bewerk</a>
                         <form action="/facturen/<%= factuur.factuurid %>" method="POST" onsubmit="return confirm('Weet je zeker dat je deze factuur wilt verwijderen?');">
                           <input type="hidden" name="_method" value="DELETE" />
-                          <button type="submit" class="btn btn-danger">Verwijder</button>
+                          <button type="submit" class="btn action-btn action-delete">Verwijder</button>
                         </form>
                       </div>
                     </td>

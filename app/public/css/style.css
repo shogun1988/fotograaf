@@ -1,13 +1,13 @@
 :root {
-  --ink: #20201e;
-  --muted: #777773;
-  --line: #e8e7e3;
-  --soft: #f6f5f2;
-  --accent: #c86745;
-  --accent-dark: #a64d31;
-  --accent-soft: #f8e7df;
-  --sage: #e7f0e8;
-  --sage-ink: #38704b;
+  --ink: #292929;
+  --muted: #777777;
+  --line: #dedede;
+  --soft: #eef0f2;
+  --accent: #f3c83b;
+  --accent-dark: #d9a900;
+  --accent-soft: #fff4bf;
+  --sage: #e4e5e6;
+  --sage-ink: #3c3c3c;
 }
 
 * {
@@ -23,7 +23,7 @@ body {
 body {
   font-family: "DM Sans", sans-serif;
   background:
-    radial-gradient(circle at 95% 0%, rgba(200, 103, 69, 0.12), transparent 22rem),
+    radial-gradient(circle at 92% 6%, rgba(255, 238, 151, 0.72), transparent 25rem),
     var(--soft);
   color: var(--ink);
 }
@@ -41,32 +41,88 @@ textarea {
 }
 
 .surface-card {
-  border: 1px solid var(--line);
-  box-shadow: 0 9px 24px rgba(47, 43, 38, 0.045);
-  border-radius: 1rem;
-  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 14px 32px rgba(70, 74, 78, 0.08);
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+}
+
+.weather-widget {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 88% 0%, rgba(255, 238, 151, 0.68), transparent 17rem),
+    rgba(255, 255, 255, 0.84);
+}
+
+.weather-header {
+  border-bottom-color: rgba(222, 222, 222, 0.72);
+}
+
+.weather-icon {
+  background: var(--accent-soft);
+  color: #765d00;
+  box-shadow: 0 8px 18px rgba(209, 167, 18, 0.14);
+}
+
+.weather-day {
+  min-height: 13rem;
+  border-color: rgba(222, 222, 222, 0.72);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.weather-day:hover {
+  background: rgba(255, 251, 234, 0.72);
+  transform: translateY(-2px);
+}
+
+.weather-day.is-today {
+  background: var(--accent-soft);
+}
+
+.weather-day.is-today:hover {
+  background: #ffefaa;
+}
+
+.weather-emoji {
+  filter: drop-shadow(0 5px 7px rgba(41, 41, 41, 0.1));
+}
+
+.weather-rain {
+  color: #6e7c91;
+}
+
+.weather-note {
+  background: rgba(255, 255, 255, 0.42);
+  border-top-color: rgba(222, 222, 222, 0.72);
+}
+
+.sidebar-shell {
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-right-color: transparent !important;
 }
 
 .sidebar-link {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  border-radius: 0.875rem;
-  padding: 0.875rem 1rem;
+  border-radius: 999px;
+  padding: 0.8rem 1rem;
   color: var(--muted);
   font-weight: 500;
   transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
 .sidebar-link:hover {
-  background: var(--soft);
+  background: #ffffff;
   color: var(--ink);
-  transform: translateX(2px);
+  transform: translateX(3px);
 }
 
 .sidebar-link.active {
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: var(--ink);
+  color: #ffffff;
+  box-shadow: 0 7px 16px rgba(41, 41, 41, 0.16);
 }
 
 .form-control,
@@ -74,8 +130,8 @@ textarea {
 .form-textarea {
   width: 100%;
   border: 1px solid var(--line);
-  border-radius: 0.875rem;
-  background: #ffffff;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
   color: var(--ink);
   padding: 0.8rem 0.95rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -91,7 +147,7 @@ textarea {
 .form-textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(200, 103, 69, 0.13);
+  box-shadow: 0 0 0 4px rgba(243, 200, 59, 0.2);
 }
 
 .btn {
@@ -99,7 +155,7 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 0.875rem;
+  border-radius: 999px;
   padding: 0.75rem 1rem;
   border: 1px solid transparent;
   font-weight: 600;
@@ -113,8 +169,8 @@ textarea {
 
 .btn-primary {
   background: var(--accent);
-  color: #ffffff;
-  box-shadow: 0 8px 16px rgba(166, 77, 49, 0.18);
+  color: var(--ink);
+  box-shadow: 0 8px 16px rgba(209, 167, 18, 0.2);
 }
 
 .btn-primary:hover {
@@ -122,7 +178,7 @@ textarea {
 }
 
 .btn-secondary {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.84);
   color: var(--ink);
   border-color: var(--line);
 }
@@ -142,6 +198,48 @@ textarea {
   background: #fee9e7;
 }
 
+.action-btn {
+  min-height: 2.35rem;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.8rem;
+  letter-spacing: -0.01em;
+}
+
+.action-view {
+  background: var(--ink);
+  color: #ffffff;
+  border-color: var(--ink);
+}
+
+.action-view:hover {
+  background: #444444;
+  box-shadow: 0 6px 14px rgba(41, 41, 41, 0.16);
+}
+
+.action-edit {
+  background: var(--accent-soft);
+  color: #765d00;
+  border-color: #f0d36a;
+}
+
+.action-edit:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+.action-delete {
+  background: #f0f1f2;
+  color: #666666;
+  border-color: #dfe1e3;
+}
+
+.action-delete:hover {
+  background: #ffe4e1;
+  color: #b42318;
+  border-color: #f2bcb5;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -156,7 +254,7 @@ textarea {
 .status-gepland,
 .status-open {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: #765d00;
 }
 
 .status-afgewerkt,
@@ -185,7 +283,7 @@ textarea {
 }
 
 .data-table thead {
-  background: #fbfaf8;
+  background: rgba(255, 255, 255, 0.58);
 }
 
 .data-table th,
@@ -205,7 +303,7 @@ textarea {
 }
 
 .data-table tbody tr:hover {
-  background: #fcfbf8;
+  background: #fffbea;
 }
 
 .metric-value {
@@ -235,9 +333,9 @@ textarea {
 
 .info-item {
   border: 1px solid var(--line);
-  border-radius: 0.875rem;
+  border-radius: 1.15rem;
   padding: 1rem;
-  background: #fcfbf8;
+  background: rgba(255, 255, 255, 0.62);
 }
 
 .alert {
@@ -263,6 +361,18 @@ textarea {
   padding: 2rem;
   text-align: center;
   color: var(--muted);
+}
+
+.location-map-card {
+  min-width: 0;
+}
+
+.location-map {
+  display: block;
+  width: 100%;
+  height: 22rem;
+  border: 0;
+  background: var(--soft);
 }
 
 @media (max-width: 1024px) {

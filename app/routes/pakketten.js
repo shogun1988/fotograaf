@@ -1,14 +1,24 @@
 ﻿const express = require('express');
-const { sqlite } = require('../db/db');
+const { sqlite, likePattern } = require('../db/db');
 const router = express.Router();
 
 const emptyToNull = v => (v === undefined || v === null || String(v).trim() === '') ? null : String(v).trim();
 
 router.get('/', (req, res, next) => {
   try {
-    const pakketten = sqlite.prepare(`SELECT * FROM pakket ORDER BY prijs ASC, naam ASC`).all();
+    const search = String(req.query.q || '').trim();
+    const searchClause = search ? `
+      WHERE (
+        COALESCE(naam, '') || ' ' || COALESCE(beschrijving, '') || ' ' ||
+        CAST(COALESCE(prijs, 0) AS TEXT) || ' ' ||
+        CAST(COALESCE(aantal_fotos_inbegrepen, '') AS TEXT) || ' ' ||
+        CAST(COALESCE(levertijd_dagen, '') AS TEXT)
+      ) LIKE ? COLLATE NOCASE ESCAPE '\\'` : '';
+    const pakketten = sqlite.prepare(`
+      SELECT * FROM pakket ${searchClause} ORDER BY prijs ASC, naam ASC
+    `).all(...(search ? [likePattern(search)] : []));
     res.render('pakketten/index', { title:'Pakketten', pageTitle:'Pakketten',
-      pageSubtitle:'Een helder overzicht van alle aangeboden fotografiepakketten.', pakketten });
+      pageSubtitle:'Een helder overzicht van alle aangeboden fotografiepakketten.', pakketten, search });
   } catch(e) { next(e); }
 });
 

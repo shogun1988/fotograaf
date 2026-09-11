@@ -69,34 +69,34 @@
       <div class="grid gap-6 xl:grid-cols-2">
 
         <%# ───── WEER WIDGET ───── %>
-        <section class="surface-card xl:col-span-2">
-          <div class="border-b border-line px-5 py-4 flex items-center justify-between">
+        <section class="surface-card weather-widget xl:col-span-2">
+          <div class="weather-header border-b border-line px-5 py-4 flex items-center justify-between">
             <div>
               <h2 class="text-xl font-bold tracking-[-0.03em]">Weersvoorspelling — 7 dagen</h2>
               <p class="muted mt-1 text-sm">
                 <i data-lucide="map-pin" class="inline h-3.5 w-3.5 mr-1"></i><%= weer.stad %>, België
               </p>
             </div>
-            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e8f4fd] text-[#3b82f6]">
+            <div class="weather-icon flex h-11 w-11 items-center justify-center rounded-2xl">
               <i data-lucide="cloud-sun" class="h-5 w-5"></i>
             </div>
           </div>
 
           <% if (weer.fout) { %>
-            <div class="px-5 py-6 text-sm text-muted flex items-center gap-2">
+            <div class="weather-error px-5 py-6 text-sm text-muted flex items-center gap-2">
               <i data-lucide="wifi-off" class="h-4 w-4 shrink-0"></i>
               <span><%= weer.fout %></span>
             </div>
           <% } else { %>
-            <div class="grid grid-cols-2 divide-x divide-y divide-line sm:grid-cols-4 lg:grid-cols-7">
+            <div class="weather-days grid grid-cols-2 divide-x divide-y divide-line sm:grid-cols-4 lg:grid-cols-7">
               <% weer.dagen.forEach((dag, i) => { %>
-                <div class="flex flex-col items-center gap-2 px-3 py-5 text-center <%= i === 0 ? 'bg-accent-soft/40' : 'hover:bg-soft' %> transition-colors">
+                <div class="weather-day flex flex-col items-center gap-2 px-3 py-5 text-center <%= i === 0 ? 'is-today' : '' %>">
                   <p class="text-xs font-bold uppercase tracking-widest <%= i === 0 ? 'text-accent' : 'text-muted' %>">
                     <%= dag.dagLabel %>
                   </p>
                   <p class="text-[10px] text-muted"><%= dag.datumLabel %></p>
 
-                  <span class="text-3xl leading-none my-1" title="<%= dag.label %>"><%= dag.emoji %></span>
+                  <span class="weather-emoji text-3xl leading-none my-1" title="<%= dag.label %>"><%= dag.emoji %></span>
 
                   <p class="text-[11px] font-medium text-muted leading-tight line-clamp-2 min-h-[2.5rem]"><%= dag.label %></p>
 
@@ -105,12 +105,12 @@
                     <span class="text-xs text-muted font-normal"><%= dag.minTemp %>°</span>
                   </div>
 
-                  <div class="flex items-center gap-1 text-[11px] text-[#3b82f6]" title="Neerslagkans">
+                  <div class="weather-rain flex items-center gap-1 text-[11px]" title="Neerslagkans">
                     <i data-lucide="droplets" class="h-3 w-3 shrink-0"></i>
                     <span class="font-semibold"><%= dag.neerslag %>%</span>
                   </div>
 
-                  <div class="flex items-center gap-1 text-[11px] text-muted" title="Windsnelheid">
+                  <div class="weather-wind flex items-center gap-1 text-[11px] text-muted" title="Windsnelheid">
                     <i data-lucide="wind" class="h-3 w-3 shrink-0"></i>
                     <span><%= dag.windsnelheid %> km/u</span>
                   </div>
@@ -118,7 +118,7 @@
               <% }) %>
             </div>
 
-            <div class="border-t border-line px-5 py-3 flex items-center gap-2 text-[11px] text-muted">
+            <div class="weather-note border-t border-line px-5 py-3 flex items-center gap-2 text-[11px] text-muted">
               <i data-lucide="info" class="h-3.5 w-3.5 shrink-0"></i>
               Weersdata via <a href="https://open-meteo.com" target="_blank" class="underline hover:text-accent">Open-Meteo</a> — bijgewerkt bij elke paginalading.
             </div>

@@ -7,6 +7,10 @@ const sqlite = new Database(DB_PATH);
 sqlite.pragma('journal_mode = WAL');
 sqlite.pragma('foreign_keys = ON');
 
+function likePattern(value) {
+  return `%${String(value).trim().replace(/[\\%_]/g, '\\$&')}%`;
+}
+
 // Wrap better-sqlite3 (sync) to look like pg's async pool.query($1,$2 style)
 function query(sql, params = []) {
   // Convert pg positional params ($1, $2, ...) to SQLite (?, ?, ...)
@@ -59,4 +63,4 @@ function queryReturning(sql, params = []) {
   }
 }
 
-module.exports = { query, queryReturning, sqlite };
+module.exports = { query, queryReturning, sqlite, likePattern };

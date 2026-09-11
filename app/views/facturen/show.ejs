@@ -10,12 +10,12 @@
           <p class="muted mt-2 text-sm"><%= pageSubtitle %></p>
         </div>
         <div class="flex flex-wrap gap-3">
-          <a href="/facturen/<%= factuur.factuurid %>/edit" class="btn btn-secondary">
+          <a href="/facturen/<%= factuur.factuurid %>/edit" class="btn action-btn action-edit">
             <i data-lucide="pencil" class="h-4 w-4"></i> Bewerk
           </a>
           <form action="/facturen/<%= factuur.factuurid %>" method="POST" onsubmit="return confirm('Factuur verwijderen?');">
             <input type="hidden" name="_method" value="DELETE" />
-            <button type="submit" class="btn btn-danger">
+            <button type="submit" class="btn action-btn action-delete">
               <i data-lucide="trash-2" class="h-4 w-4"></i> Verwijder
             </button>
           </form>

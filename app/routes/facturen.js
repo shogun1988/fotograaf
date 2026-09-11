@@ -1,5 +1,5 @@
 ﻿const express = require('express');
-const { sqlite } = require('../db/db');
+const { sqlite, likePattern } = require('../db/db');
 const router = express.Router();
 
 const emptyToNull = v => (v === undefined || v === null || String(v).trim() === '') ? null : String(v).trim();
@@ -27,11 +27,20 @@ function loadFormData() {
 
 router.get('/', (req, res, next) => {
   try {
+    const search = String(req.query.q || '').trim();
+    const searchClause = search ? `
+      WHERE (
+        CAST(fa.factuurid AS TEXT) || ' ' || COALESCE(fa.datum, '') || ' ' ||
+        COALESCE(fa.status, '') || ' ' || CAST(COALESCE(fa.totaalbedrag, 0) AS TEXT) || ' ' ||
+        COALESCE(k.voornaam || ' ' || k.achternaam, '') || ' ' ||
+        CAST(COALESCE(fa.fotoshoot_id, '') AS TEXT)
+      ) LIKE ? COLLATE NOCASE ESCAPE '\\'` : '';
     const facturen = sqlite.prepare(`
       SELECT fa.factuurid, fa.datum, fa.totaalbedrag, fa.status, fa.fotoshoot_id,
              k.voornaam || ' ' || k.achternaam AS klant_naam
       FROM factuur fa LEFT JOIN klant k ON k.klantid = fa.klant_id
-      ORDER BY fa.datum DESC, fa.factuurid DESC`).all();
+      ${searchClause}
+      ORDER BY fa.datum DESC, fa.factuurid DESC`).all(...(search ? [likePattern(search)] : []));
     const totalen = sqlite.prepare(`
       SELECT COUNT(*) AS totaal_aantal,
              SUM(CASE WHEN status='open'    THEN 1 ELSE 0 END) AS open_aantal,
@@ -40,7 +49,7 @@ router.get('/', (req, res, next) => {
              COALESCE(SUM(CASE WHEN status='betaald' THEN totaalbedrag END),0) AS betaald_bedrag
       FROM factuur`).get();
     res.render('facturen/index', { title:'Facturen', pageTitle:'Facturen',
-      pageSubtitle:'Hou openstaande en betaalde facturen nauwkeurig bij.', facturen, totalen });
+      pageSubtitle:'Hou openstaande en betaalde facturen nauwkeurig bij.', facturen, totalen, search });
   } catch(e) { next(e); }
 });
 

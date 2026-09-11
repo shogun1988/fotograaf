@@ -1,5 +1,5 @@
 ﻿const express = require('express');
-const { sqlite } = require('../db/db');
+const { sqlite, likePattern } = require('../db/db');
 const router = express.Router();
 
 const emptyToNull = v => (v === undefined || v === null || String(v).trim() === '') ? null : String(v).trim();
@@ -15,31 +15,34 @@ function loadFormData() {
 router.get('/', (req, res, next) => {
   try {
     const selectedStatus = emptyToNull(req.query.status);
-    let fotoshoots;
+    const search = String(req.query.q || '').trim();
+    const conditions = [];
+    const params = [];
     if (selectedStatus) {
-      fotoshoots = sqlite.prepare(`
-        SELECT f.fotoshootid, f.datum, f.starttijd, f.eindtijd, f.status,
-               k.voornaam || ' ' || k.achternaam AS klant_naam,
-               p.naam AS pakket_naam, l.naam AS locatie_naam
-        FROM fotoshoot f
-        LEFT JOIN klant k ON k.klantid = f.klant_id
-        LEFT JOIN pakket p ON p.pakketid = f.pakket_id
-        LEFT JOIN locatie l ON l.locatieid = f.locatie_id
-        WHERE f.status = ?
-        ORDER BY f.datum DESC, f.starttijd DESC, f.fotoshootid DESC`).all(selectedStatus);
-    } else {
-      fotoshoots = sqlite.prepare(`
-        SELECT f.fotoshootid, f.datum, f.starttijd, f.eindtijd, f.status,
-               k.voornaam || ' ' || k.achternaam AS klant_naam,
-               p.naam AS pakket_naam, l.naam AS locatie_naam
-        FROM fotoshoot f
-        LEFT JOIN klant k ON k.klantid = f.klant_id
-        LEFT JOIN pakket p ON p.pakketid = f.pakket_id
-        LEFT JOIN locatie l ON l.locatieid = f.locatie_id
-        ORDER BY f.datum DESC, f.starttijd DESC, f.fotoshootid DESC`).all();
+      conditions.push('f.status = ?');
+      params.push(selectedStatus);
     }
+    if (search) {
+      conditions.push(`(
+        CAST(f.fotoshootid AS TEXT) || ' ' || COALESCE(f.datum, '') || ' ' ||
+        COALESCE(f.status, '') || ' ' || COALESCE(k.voornaam || ' ' || k.achternaam, '') || ' ' ||
+        COALESCE(p.naam, '') || ' ' || COALESCE(l.naam, '')
+      ) LIKE ? COLLATE NOCASE ESCAPE '\\'`);
+      params.push(likePattern(search));
+    }
+    const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+    const fotoshoots = sqlite.prepare(`
+      SELECT f.fotoshootid, f.datum, f.starttijd, f.eindtijd, f.status,
+             k.voornaam || ' ' || k.achternaam AS klant_naam,
+             p.naam AS pakket_naam, l.naam AS locatie_naam
+      FROM fotoshoot f
+      LEFT JOIN klant k ON k.klantid = f.klant_id
+      LEFT JOIN pakket p ON p.pakketid = f.pakket_id
+      LEFT JOIN locatie l ON l.locatieid = f.locatie_id
+      ${whereClause}
+      ORDER BY f.datum DESC, f.starttijd DESC, f.fotoshootid DESC`).all(...params);
     res.render('fotoshoots/index', { title:'Fotoshoots', pageTitle:'Fotoshoots',
-      pageSubtitle:'Volg planning, status en details van al je shoots.', fotoshoots, selectedStatus });
+      pageSubtitle:'Volg planning, status en details van al je shoots.', fotoshoots, selectedStatus, search });
   } catch(e) { next(e); }
 });
 
