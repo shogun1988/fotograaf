@@ -1,7 +1,10 @@
 const path = require('path');
+const crypto = require('crypto');
 const express = require('express');
 const methodOverride = require('method-override');
+const session = require('express-session');
 
+const authRoutes = require('./routes/auth');
 const indexRoutes = require('./routes/index');
 const klantenRoutes = require('./routes/klanten');
 const fotoshootsRoutes = require('./routes/fotoshoots');
@@ -11,6 +14,7 @@ const locatiesRoutes = require('./routes/locaties');
 
 const app = express();
 const port = process.env.PORT || 3000;
+const sessionSecret = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -24,6 +28,18 @@ app.use(methodOverride(function (req, res) {
   }
 }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  name: 'fotograaf.sid',
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 8 * 60 * 60 * 1000
+  }
+}));
 
 const normalizeStatus = (value) => String(value || '').trim().toLowerCase();
 
@@ -98,11 +114,22 @@ app.locals.badgeClass = (status) => {
 
 app.use((req, res, next) => {
   res.locals.currentPath = req.path;
+  res.locals.authenticated = Boolean(req.session.authenticated);
   res.locals.feedback = {
     success: req.query.success || '',
     error: req.query.error || ''
   };
   next();
+});
+
+app.use('/auth', authRoutes);
+
+app.use((req, res, next) => {
+  if (req.session.authenticated) {
+    return next();
+  }
+
+  return res.redirect(`/auth/login?error=${encodeURIComponent('Log eerst in om de webapplicatie te gebruiken.')}`);
 });
 
 app.use('/', indexRoutes);

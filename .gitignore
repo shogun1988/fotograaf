@@ -1,4 +1,5 @@
 # Byte-compiled / optimized / DLL files
+node_modules/
 __pycache__/
 *.py[codz]
 *$py.class
@@ -152,6 +153,9 @@ activemq-data/
 # Environments
 .env
 .envrc
+.env.*
+app/db/auth-config.json
+app/auth-config.json
 .venv
 env/
 venv/

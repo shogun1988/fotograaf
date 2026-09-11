@@ -198,6 +198,114 @@ textarea {
   background: #fee9e7;
 }
 
+.auth-page {
+  position: relative;
+  display: grid;
+  isolation: isolate;
+  min-height: 100vh;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    linear-gradient(rgba(25, 29, 34, 0.58), rgba(25, 29, 34, 0.68)),
+    url('/images/login-background.jpg') center / cover no-repeat;
+}
+
+.auth-page::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: rgba(25, 29, 34, 0.12);
+  content: '';
+}
+
+.auth-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 28rem);
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.91);
+  box-shadow: 0 22px 55px rgba(10, 14, 20, 0.28);
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-weight: 700;
+}
+
+.auth-logo {
+  display: inline-flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.9rem;
+  background: var(--accent-soft);
+  color: #765d00;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: -0.65rem;
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.auth-error {
+  border: 1px solid #f2d0cb;
+  border-radius: 0.9rem;
+  background: #fff5f4;
+  color: #b42318;
+  padding: 0.8rem 1rem;
+  font-size: 0.875rem;
+}
+
+.auth-success {
+  border: 1px solid #b7dfc2;
+  border-radius: 0.9rem;
+  background: #effaf1;
+  color: #216e39;
+  padding: 0.8rem 1rem;
+  font-size: 0.875rem;
+}
+
+.auth-back {
+  display: block;
+  margin-top: 1.25rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.mfa-code {
+  letter-spacing: 0.35em;
+  text-align: center;
+}
+
+.mfa-secret {
+  overflow-wrap: anywhere;
+  border: 1px dashed var(--accent-dark);
+  border-radius: 0.9rem;
+  background: var(--accent-soft);
+  padding: 1rem;
+  font-family: monospace;
+  font-weight: 700;
+  text-align: center;
+}
+
+.mfa-qr {
+  display: block;
+  width: 220px;
+  height: 220px;
+  margin-right: auto;
+  margin-left: auto;
+  border: 0.75rem solid #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 8px 18px rgba(41, 41, 41, 0.12);
+}
+
 .action-btn {
   min-height: 2.35rem;
   padding: 0.55rem 0.85rem;

@@ -44,4 +44,17 @@
       <span>Locaties</span>
     </a>
   </nav>
+
+  <div class="mt-8 border-t border-line pt-5">
+    <a href="/auth/account" class="sidebar-link <%= isActive('/auth/account') ? 'active' : '' %>">
+      <i data-lucide="user-cog" class="h-4 w-4"></i>
+      <span>Mijn account</span>
+    </a>
+    <form action="/auth/logout" method="post">
+      <button class="sidebar-link w-full text-left" type="submit">
+        <i data-lucide="log-out" class="h-4 w-4"></i>
+        <span>Uitloggen</span>
+      </button>
+    </form>
+  </div>
 </aside>

@@ -1,0 +1,28 @@
+<%- include('../partials/head', { title: title }) %>
+<main class="auth-page">
+  <section class="auth-card surface-card">
+    <div class="auth-brand">
+      <span class="auth-logo"><i data-lucide="camera" class="h-5 w-5"></i></span>
+      <span>Fotograaf Webapp</span>
+    </div>
+    <p class="eyebrow mt-8">Beveiligde omgeving</p>
+    <h1 class="mt-2 text-3xl font-bold tracking-[-0.03em]">Welkom terug</h1>
+    <p class="muted mt-2">Log in om je fotografiebeheer te openen.</p>
+
+    <% if (error) { %>
+      <div class="auth-error mt-6" role="alert"><%= error %></div>
+    <% } %>
+
+    <form action="/auth/login" method="post" class="mt-6 space-y-4">
+      <label class="form-label" for="username">Gebruikersnaam</label>
+      <input class="form-control" id="username" name="username" autocomplete="username" required autofocus />
+      <label class="form-label" for="password">Wachtwoord</label>
+      <input class="form-control" id="password" name="password" type="password" autocomplete="current-password" required />
+      <button class="btn btn-primary w-full" type="submit">
+        <i data-lucide="log-in" class="h-4 w-4"></i>
+        Inloggen
+      </button>
+    </form>
+  </section>
+</main>
+<%- include('../partials/footer') %>
