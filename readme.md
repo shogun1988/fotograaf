@@ -1,183 +1,183 @@
-# 📷 Fotograaf Webapp
+# 📷 Photographer Web App
 
-> **Een eenvoudige online werkplek voor fotografen.**  
-> Beheer klanten, plan fotoshoots en houd facturen bij op één plaats.
+> **A simple online workspace for photographers.**  
+> Manage clients, plan photo shoots, and keep track of invoices in one place.
 
 ---
 
-## 🧭 Volg deze volgorde
+## 🧭 Follow this order
 
-Gebruik je de app voor het eerst? Volg deze stappen van boven naar beneden:
+Using the app for the first time? Follow these steps from top to bottom:
 
-1. Installeer eerst **Git** en **Node.js** op je computer.
-2. Download de app van GitHub.
-3. Bereid de app eenmalig voor.
-4. Start de app en open ze in je browser.
+1. Install **Git** and **Node.js** on your computer.
+2. Download the app from GitHub.
+3. Prepare the app once.
+4. Start the app and open it in your browser.
 5. Log in.
-6. Gebruik de verschillende onderdelen, zoals klanten en fotoshoots.
+6. Use the different sections, such as clients and photo shoots.
 
-> ℹ️ Je hoeft geen programmeur te zijn. Volg de stappen gewoon één voor één.
+> ℹ️ You do not need to be a programmer. Just follow the steps one by one.
 
 ---
 
-## 🛠️ De app voor de eerste keer installeren
+## 🛠️ Install the app for the first time
 
-Gebruik deze uitleg als je de app voor de eerste keer op je computer installeert.
+Use these instructions when you install the app on your computer for the first time.
 
-### 1. Installeer Git
+### 1. Install Git
 
-**Git** is een programma waarmee je het project van GitHub naar je computer kunt downloaden.
+**Git** is a program that lets you download the project from GitHub onto your computer.
 
-1. Ga naar [git-scm.com/download/win](https://git-scm.com/download/win).
-2. Download en open het installatiebestand.
-3. Volg de stappen op het scherm. Je mag de standaardkeuzes laten staan.
-4. Sluit en open je terminal opnieuw nadat de installatie klaar is.
+1. Go to [git-scm.com/download/win](https://git-scm.com/download/win).
+2. Download and open the installation file.
+3. Follow the instructions on the screen. You can keep the default choices.
+4. Close and reopen your terminal after the installation has finished.
 
-### 2. Installeer Node.js
+### 2. Install Node.js
 
-De app heeft **Node.js** nodig om te kunnen werken.
+The app needs **Node.js** to work.
 
-1. Ga naar [nodejs.org](https://nodejs.org/).
-2. Download de versie met de aanduiding **LTS**.
-3. Open het gedownloade bestand en volg de stappen op het scherm.
-4. Sluit en open je terminal opnieuw nadat de installatie klaar is.
+1. Go to [nodejs.org](https://nodejs.org/).
+2. Download the version marked **LTS**.
+3. Open the downloaded file and follow the instructions on the screen.
+4. Close and reopen your terminal after the installation has finished.
 
-### 3. Download het project van GitHub
+### 3. Download the project from GitHub
 
-1. Maak of kies een map waarin je het project wilt bewaren, bijvoorbeeld `Documenten`.
-2. Open die map in Verkenner.
-3. Typ `cmd` in de adresbalk bovenaan en druk op **Enter**.
-4. Typ deze opdracht en druk op **Enter**:
+1. Create or choose a folder where you want to save the project, for example `Documents`.
+2. Open that folder in File Explorer.
+3. Type `cmd` in the address bar at the top and press **Enter**.
+4. Type the following command and press **Enter**:
 
 ```text
 git clone https://github.com/shogun1988/fotograaf.git
 ```
 
-Wacht tot het downloaden klaar is. Er verschijnt daarna een nieuwe map met de naam `fotograaf`.
+Wait for the download to finish. A new folder called `fotograaf` will appear.
 
-> ℹ️ **Wat is een terminal?**  
-> Een terminal is een venster waarin je korte opdrachten kunt typen. In Windows kun je in Verkenner naar de map gaan, in de adresbalk `cmd` typen en op **Enter** drukken.
+> ℹ️ **What is a terminal?**  
+> A terminal is a window where you can type short commands. In Windows, open a folder in File Explorer, type `cmd` in the address bar, and press **Enter**.
 
-### 4. Open de juiste map
+### 4. Open the correct folder
 
-Open een terminal en typ onderstaande opdracht. Druk daarna op **Enter**:
+Open a terminal and type the command below. Then press **Enter**:
 
 ```text
 cd D:\fotograaf\app
 ```
 
-> ℹ️ Staat het project op een andere plaats? Vervang dan `D:\fotograaf\app` door de locatie van jouw map `app`.
+> ℹ️ Did you save the project somewhere else? Replace `D:\fotograaf\app` with the location of your own `app` folder.
 
-### 5. Bereid de app voor
+### 5. Prepare the app
 
-Typ deze opdracht en druk op **Enter**:
+Type this command and press **Enter**:
 
 ```text
 npm install
 ```
 
-Wacht tot de opdracht klaar is. Dit kan bij de eerste keer enkele minuten duren.
+Wait for the command to finish. The first installation may take a few minutes.
 
-### 6. Start de app
+### 6. Start the app
 
-Typ daarna:
+Then type:
 
 ```text
 node server.js
 ```
 
-Wanneer je de melding ziet dat de webapp draait, is alles in orde.
+When you see a message saying that the web app is running, everything is ready.
 
-### 7. Open de app
+### 7. Open the app
 
-Open Chrome, Edge of een andere browser en ga naar:
+Open Chrome, Edge, or another browser and go to:
 
 **[http://localhost:3000](http://localhost:3000)**
 
 ---
 
-## 🔐 Log in op de app
+## 🔐 Log in to the app
 
-Gebruik op het inlogscherm deze gegevens:
+Use these details on the login screen:
 
-| Wat heb je nodig? | In te vullen waarde |
+| What do you need? | Value to enter |
 | --- | --- |
-| Gebruikersnaam | `demo` |
-| Wachtwoord | `test123test` |
+| Username | `demo` |
+| Password | `test123test` |
 
-> 🔒 **Tip:** Wijzig het wachtwoord na je eerste keer inloggen via **Mijn account**.
-
----
-
-## ✨ Zo gebruik je de app
-
-Na het inloggen kom je op het dashboard. Hieronder staat een eenvoudige, logische volgorde om te beginnen.
-
-### 1. Voeg eerst je pakketten toe
-
-Ga naar **Pakketten** en voeg je formules toe, bijvoorbeeld een portretshoot, familieshoot of huwelijksreportage. Vul de prijs en een korte uitleg in.
-
-### 2. Voeg je locaties toe
-
-Ga naar **Locaties** en voeg plaatsen toe waar je vaak fotografeert, zoals je studio, een park of een klantlocatie.
-
-### 3. Voeg een klant toe
-
-Ga naar **Klanten** en kies **Nieuwe klant**. Vul naam, e-mailadres, telefoonnummer en adres in. Sla de gegevens op.
-
-### 4. Plan een fotoshoot
-
-Ga naar **Fotoshoots** en kies **Nieuwe fotoshoot**. Kies de klant, het pakket, de locatie, datum en tijd. Daarna kun je de fotoshoot opslaan.
-
-### 5. Bekijk of maak een factuur
-
-Ga naar **Facturen** om openstaande en betaalde facturen te bekijken. Controleer bij een betaling of de status correct staat.
-
-> 💡 Begin bij een nieuwe klant altijd met **klant toevoegen** en maak daarna de bijbehorende **fotoshoot** aan.
+> 🔒 **Tip:** Change the password after your first login through **My account**.
 
 ---
 
-## ❓ Hulp bij veelvoorkomende vragen
+## ✨ How to use the app
 
-### De pagina opent niet
+After logging in, you will arrive at the dashboard. Below is a simple and logical order to get started.
 
-Controleer of de terminal nog openstaat en of je eerst `node server.js` hebt uitgevoerd. Probeer vervolgens de pagina in je browser opnieuw te laden.
+### 1. Add your packages first
 
-### Hoe sluit ik de app af?
+Go to **Packages** and add your services, for example a portrait shoot, family shoot, or wedding report. Enter the price and a short description.
 
-Ga terug naar het terminalvenster en druk tegelijk op:
+### 2. Add your locations
+
+Go to **Locations** and add places where you often take photos, such as your studio, a park, or a client location.
+
+### 3. Add a client
+
+Go to **Clients** and choose **New client**. Enter the name, email address, phone number, and address. Save the information.
+
+### 4. Schedule a photo shoot
+
+Go to **Photo shoots** and choose **New photo shoot**. Select the client, package, location, date, and time. Then save the photo shoot.
+
+### 5. View or create an invoice
+
+Go to **Invoices** to view unpaid and paid invoices. When a payment is received, check that the invoice status is correct.
+
+> 💡 For a new assignment, always start by **adding the client** and then create the related **photo shoot**.
+
+---
+
+## ❓ Help with common questions
+
+### The page does not open
+
+Check whether the terminal is still open and whether you have run `node server.js` first. Then try to reload the page in your browser.
+
+### How do I stop the app?
+
+Return to the terminal window and press:
 
 ```text
 Ctrl + C
 ```
 
-### Hoe start ik de app later opnieuw?
+### How do I start the app again later?
 
-1. Open een terminal in de map `D:\fotograaf\app`.
-2. Typ `node server.js`.
-3. Open [http://localhost:3000](http://localhost:3000) in je browser.
+1. Open a terminal in the `D:\fotograaf\app` folder.
+2. Type `node server.js`.
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-> 💡 `npm install` hoef je normaal maar één keer uit te voeren: bij de eerste installatie.
+> 💡 You normally only need to run `npm install` once: during the first installation.
 
-### In welke volgorde gebruik ik de app?
+### In what order should I use the app?
 
-Gebruik bij een nieuwe opdracht deze eenvoudige volgorde:
+Use this simple order for a new assignment:
 
-1. Voeg de klant toe.
-2. Plan de fotoshoot.
-3. Controleer de gegevens van de fotoshoot.
-4. Bekijk of maak de factuur.
-5. Pas de status van de fotoshoot en factuur aan wanneer dat nodig is.
+1. Add the client.
+2. Schedule the photo shoot.
+3. Check the photo shoot details.
+4. View or create the invoice.
+5. Update the photo shoot and invoice status when needed.
 
-### Hoe wijzig ik mijn wachtwoord?
+### How do I change my password?
 
-1. Log in op de app.
-2. Open **Mijn account**.
-3. Vul je huidige en nieuwe wachtwoord in.
-4. Sla de wijziging op.
+1. Log in to the app.
+2. Open **My account**.
+3. Enter your current and new password.
+4. Save the change.
 
 ---
 
-## ℹ️ Voor wie is deze handleiding?
+## ℹ️ Who is this guide for?
 
-Deze uitleg is geschreven voor mensen zonder technische of programmeerkennis. Je hoeft geen code te begrijpen: volg gewoon de stappen in de aangegeven volgorde.
+This guide is written for people without technical or programming knowledge. You do not need to understand code: simply follow the steps in the given order.
