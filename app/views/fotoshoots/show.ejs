@@ -110,7 +110,11 @@
               <tbody>
                 <% facturen.forEach((factuur) => { %>
                   <tr>
-                    <td class="font-semibold">#<%= factuur.factuurid %></td>
+                    <td>
+                      <a href="/facturen/<%= factuur.factuurid %>" class="font-semibold text-accent hover:underline">
+                        #<%= factuur.factuurid %>
+                      </a>
+                    </td>
                     <td><%= formatDate(factuur.datum) %></td>
                     <td><%= formatCurrency(factuur.totaalbedrag) %></td>
                     <td><span class="<%= badgeClass(factuur.status) %>"><%= factuur.status %></span></td>
