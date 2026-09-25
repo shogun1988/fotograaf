@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const path = require('path');
+require('./config/env');
 
 const USERNAME = process.env.AUTH_USERNAME || 'demo';
 const AUTH_CONFIG_PATH = path.join(__dirname, 'auth-config.json');

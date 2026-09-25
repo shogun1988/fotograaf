@@ -1,5 +1,6 @@
 const path = require('path');
 const crypto = require('crypto');
+require('./config/env');
 const express = require('express');
 const methodOverride = require('method-override');
 const session = require('express-session');

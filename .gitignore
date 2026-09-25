@@ -154,6 +154,7 @@ activemq-data/
 .env
 .envrc
 .env.*
+!.env.example
 app/db/auth-config.json
 app/auth-config.json
 .venv

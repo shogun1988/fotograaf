@@ -78,7 +78,25 @@ npm install
 
 Wait for the command to finish. The first installation may take a few minutes.
 
-### 6. Start the app
+### 6. Configure local secrets
+
+The app reads private settings from a `.env` file in the project folder. This file is
+ignored by Git and must never be uploaded to GitHub.
+
+1. From the `app` folder, copy the example file with:
+
+   ```text
+   copy ..\.env.example ..\.env
+   ```
+
+2. Open `..\.env` and replace `SESSION_SECRET` with a long, random value.
+3. Set `AUTH_USERNAME` and `AUTH_PASSWORD_HASH` to your own login details.
+
+Keep `.env` private. Only `.env.example`, which contains no real secrets, belongs in
+GitHub. The app also keeps its generated authentication configuration in an ignored
+file under `app/`.
+
+### 7. Start the app
 
 Then type:
 
@@ -88,7 +106,7 @@ node server.js
 
 When you see a message saying that the web app is running, everything is ready.
 
-### 7. Open the app
+### 8. Open the app
 
 Open Chrome, Edge, or another browser and go to:
 
